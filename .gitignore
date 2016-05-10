@@ -1,0 +1,11 @@
+# User-specific stuff:
+.idea/
+*.iml
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# java class files
+*.class
