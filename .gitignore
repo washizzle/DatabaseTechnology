@@ -1,6 +1,11 @@
 # User-specific stuff:
+<<<<<<< HEAD
 **/.idea/workspace.xml 
 **/.idea/tasks.xml
+=======
+.idea/
+*.iml
+>>>>>>> 9d49767b59e6460659896086aada331046123d0b
 
 # Package Files #
 *.jar
