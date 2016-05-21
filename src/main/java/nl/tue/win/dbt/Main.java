@@ -4,12 +4,12 @@ import com.google.common.collect.RangeSet;
 import com.google.common.collect.TreeRangeSet;
 import nl.tue.win.dbt.algorithms.BaselineAlgorithm;
 import nl.tue.win.dbt.algorithms.DurablePatternAlgorithm;
+import nl.tue.win.dbt.data.Edge;
 import nl.tue.win.dbt.data.LabeledGraph;
 import nl.tue.win.dbt.data.LabeledHistoryGraph;
 import nl.tue.win.dbt.data.Lifespan;
 import nl.tue.win.dbt.util.IntegerRanges;
 import org.jgrapht.graph.DefaultDirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
 
 import java.util.Set;
 
@@ -20,28 +20,28 @@ import java.util.Set;
 public class Main {
     public static void main(String[] args) {
         System.out.println("Hello World!");
-        LabeledGraph<Integer, DefaultEdge, String> pattern;
+        LabeledGraph<Integer, Edge, String> pattern;
         pattern = createGraph();
         addPattern(pattern);
 
         LabeledHistoryGraph<
-                LabeledGraph<Integer, DefaultEdge, String>,
+                LabeledGraph<Integer, Edge, String>,
                 Integer,
-                DefaultEdge,
+                Edge,
                 String> lhg;
         lhg = createLabeledHistoryGraph();
 
         RangeSet<Integer> intervals = TreeRangeSet.create();
         intervals.add(IntegerRanges.closed(1, 5));
 
-        Set<Lifespan<LabeledGraph<Integer, DefaultEdge, String>>> baselineCon;
+        Set<Lifespan<LabeledGraph<Integer, Edge, String>>> baselineCon;
         baselineCon = BaselineAlgorithm.queryMaximalContinuousDurableGraphPattern(lhg, pattern, intervals);
-        Set<Lifespan<LabeledGraph<Integer, DefaultEdge, String>>> baselineCol;
+        Set<Lifespan<LabeledGraph<Integer, Edge, String>>> baselineCol;
         baselineCol = BaselineAlgorithm.queryMaximalCollectiveDurableGraphPattern(lhg, pattern, intervals);
 
-        Set<Lifespan<LabeledGraph<Integer, DefaultEdge, String>>> algoCon;
+        Set<Lifespan<LabeledGraph<Integer, Edge, String>>> algoCon;
         algoCon = DurablePatternAlgorithm.queryMaximalContinuousDurableGraphPattern(lhg, pattern, intervals);
-        Set<Lifespan<LabeledGraph<Integer, DefaultEdge, String>>> algoCol;
+        Set<Lifespan<LabeledGraph<Integer, Edge, String>>> algoCol;
         algoCol = DurablePatternAlgorithm.queryMaximalCollectiveDurableGraphPattern(lhg, pattern, intervals);
 
         System.out.println("Continuous");
@@ -54,11 +54,11 @@ public class Main {
     }
 
     private static LabeledHistoryGraph<
-            LabeledGraph<Integer, DefaultEdge, String>,
+            LabeledGraph<Integer, Edge, String>,
             Integer,
-            DefaultEdge,
+            Edge,
             String> createLabeledHistoryGraph() {
-        LabeledGraph<Integer, DefaultEdge, String> g0, g1, g2, g3, g4, g5;
+        LabeledGraph<Integer, Edge, String> g0, g1, g2, g3, g4, g5;
 
         g0 = createGraph();
         g0.addVertex(666);
@@ -100,9 +100,9 @@ public class Main {
         addPattern(g5);
 
         LabeledHistoryGraph<
-                LabeledGraph<Integer, DefaultEdge, String>,
+                LabeledGraph<Integer, Edge, String>,
                 Integer,
-                DefaultEdge,
+                Edge,
                 String> lhg;
         lhg = new LabeledHistoryGraph<>(Main::createGraph);
 
@@ -116,13 +116,13 @@ public class Main {
         return lhg;
     }
 
-    private static LabeledGraph<Integer, DefaultEdge, String> createGraph() {
+    private static LabeledGraph<Integer, Edge, String> createGraph() {
         return new LabeledGraph<>(
-                new DefaultDirectedGraph<>(DefaultEdge.class),
-                () -> new DefaultDirectedGraph<>(DefaultEdge.class));
+                new DefaultDirectedGraph<>(Edge.class),
+                () -> new DefaultDirectedGraph<>(Edge.class));
     }
 
-    private static void addPattern(LabeledGraph<Integer, DefaultEdge, String> graph) {
+    private static void addPattern(LabeledGraph<Integer, Edge, String> graph) {
         for (int i = 1; i < 5; i++) {
             graph.addVertex(i);
         }
