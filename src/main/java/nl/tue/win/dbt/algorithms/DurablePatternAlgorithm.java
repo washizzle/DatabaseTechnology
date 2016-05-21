@@ -179,9 +179,11 @@ public class DurablePatternAlgorithm<V, E, L> {
     private SetMultimap<V, V> refineCandidates(final SetMultimap<V, V> candidates) {
         Set<V> allCandidateNeighbors;
         Set<V> candidateNeighbors;
+        Set<V> invalidCandidates;
         for(V patternVertex: this.vertices) {
             for(V patternNeighborVertex: Graphs.getNextNeighbors(this.pattern, patternVertex)) {
                 allCandidateNeighbors = new HashSet<>();
+                invalidCandidates = new HashSet<>();
                 for(V candidateVertex: candidates.get(patternVertex)) {
                     candidateNeighbors = timeJoin(
                             patternVertex,
@@ -189,7 +191,7 @@ public class DurablePatternAlgorithm<V, E, L> {
                             patternNeighborVertex,
                             candidates);
                     if(candidateNeighbors.isEmpty()) {
-                        candidates.remove(patternVertex, candidateVertex);
+                        invalidCandidates.add(candidateVertex);
                     } else {
                         allCandidateNeighbors.addAll(candidateNeighbors);
                     }
@@ -197,6 +199,7 @@ public class DurablePatternAlgorithm<V, E, L> {
                 if(allCandidateNeighbors.isEmpty()) {
                     return HashMultimap.create();
                 }
+                invalidCandidates.forEach(v -> candidates.remove(patternVertex, v));
                 candidates.replaceValues(patternNeighborVertex, allCandidateNeighbors);
             }
         }
