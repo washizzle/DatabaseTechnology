@@ -1,10 +1,14 @@
 package nl.tue.win.dbt.algorithms;
 
-import com.google.common.collect.*;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.RangeSet;
+import com.google.common.collect.SetMultimap;
+import com.google.common.collect.TreeRangeSet;
 import nl.tue.win.dbt.Configuration;
 import nl.tue.win.dbt.data.*;
 import nl.tue.win.dbt.util.Graphs;
 import nl.tue.win.dbt.util.IntegerRangeSets;
+import nl.tue.win.dbt.util.IntegerRanges;
 
 import java.util.*;
 
@@ -375,7 +379,7 @@ public class DurablePatternAlgorithm<V, E, L> {
             setIndex = intervals.nextSetBit(setIndex);
             unsetIndex = intervals.nextClearBit(setIndex);
             if(this.collective || unsetIndex - setIndex == this.threshold) {
-                rangeSet.add(Range.closed(setIndex, unsetIndex -1));
+                rangeSet.add(IntegerRanges.closed(setIndex, unsetIndex -1));
             }
             setIndex = unsetIndex + 1;
         } while(setIndex >= 0);

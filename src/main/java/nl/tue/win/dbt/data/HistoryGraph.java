@@ -1,8 +1,8 @@
 package nl.tue.win.dbt.data;
 
-import com.google.common.collect.Range;
 import com.google.common.collect.RangeSet;
 import com.google.common.collect.TreeRangeSet;
+import nl.tue.win.dbt.util.IntegerRanges;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 
@@ -120,7 +120,7 @@ public class HistoryGraph<G extends Graph<V, E>, V, E> extends ArrayList<G> {
     public RangeSet<Integer> lifespan() {
         RangeSet<Integer> range = TreeRangeSet.create();
         if (this.size() > 1) {
-            range.add(Range.closed(0, this.size() - 1));
+            range.add(IntegerRanges.closed(0, this.size() - 1));
         }
         return range;
     }
@@ -150,13 +150,13 @@ public class HistoryGraph<G extends Graph<V, E>, V, E> extends ArrayList<G> {
                 constructingRange = true;
             } else if(constructingRange && !alive) {
                 // Found a maximum range.
-                ranges.add(Range.closed(start, i-1));
+                ranges.add(IntegerRanges.closed(start, i-1));
                 constructingRange = false;
             }
         }
         if(constructingRange && start < size()) {
             // Close the last range.
-            ranges.add(Range.closed(start, size() - 1));
+            ranges.add(IntegerRanges.closed(start, size() - 1));
         }
         return ranges;
     }

@@ -12,4 +12,8 @@ public class IntegerRanges {
     public static ContiguousSet<Integer> toContiguousSet(Range<Integer> range) {
         return ContiguousSet.create(range, DiscreteDomain.integers());
     }
+
+    public static Range<Integer> closed(int lower, int upper) {
+        return Range.closed(lower, upper).canonical(DiscreteDomain.integers());
+    }
 }

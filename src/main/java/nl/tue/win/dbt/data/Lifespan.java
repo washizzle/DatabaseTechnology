@@ -1,8 +1,10 @@
 package nl.tue.win.dbt.data;
 
+import com.google.common.collect.DiscreteDomain;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeSet;
 import com.google.common.collect.TreeRangeSet;
+import nl.tue.win.dbt.util.IntegerRanges;
 
 import java.util.Objects;
 
@@ -17,13 +19,13 @@ public class Lifespan<T> {
     }
 
     public Lifespan(T data, int timeStamp) {
-        this(data, Range.closed(timeStamp, timeStamp));
+        this(data, IntegerRanges.closed(timeStamp, timeStamp));
     }
 
     public Lifespan(T data, Range<Integer> range) {
         this(data);
         Objects.requireNonNull(range);
-        this.rangeSet.add(range);
+        this.rangeSet.add(range.canonical(DiscreteDomain.integers()));
     }
 
     public Lifespan(T data, RangeSet<Integer> rangeSet) {

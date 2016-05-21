@@ -1,9 +1,9 @@
 package nl.tue.win.dbt.algorithms;
 
-import com.google.common.collect.Range;
 import com.google.common.collect.RangeSet;
 import nl.tue.win.dbt.data.*;
 import nl.tue.win.dbt.util.IntegerRangeSets;
+import nl.tue.win.dbt.util.IntegerRanges;
 import nl.tue.win.dbt.util.Iterators;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphMapping;
@@ -123,7 +123,7 @@ public class BaselineAlgorithm {
                     if(lifespan == null) {
                         matches.put(subgraph, new Lifespan<>(subgraph, t));
                     } else {
-                        lifespan.getRangeSet().add(Range.closed(t, t));
+                        lifespan.getRangeSet().add(IntegerRanges.closed(t, t));
                     }
                 }
             }
