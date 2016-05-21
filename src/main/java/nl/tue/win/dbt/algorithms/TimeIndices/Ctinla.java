@@ -13,6 +13,6 @@ public class Ctinla implements TimeIndex {
             final LabeledGraph<V, E, L> pattern,
             final V patternVertex,
             final BitSet intervals) {
-        throw new UnsupportedOperationException("Not yet implemented."); // TODO
+        return lvg.vertexSet(); // TODO
     }
 }
