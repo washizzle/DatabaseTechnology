@@ -21,7 +21,7 @@ public class Iterators {
                 iterable,
                 mapper,
                 initialExtreme,
-                (e, c) -> comparator.compare(e, c) < 1,
+                (c, e) -> comparator.compare(c, e) >= 1,
                 collector);
     }
 
@@ -35,7 +35,7 @@ public class Iterators {
                 iterable,
                 mapper,
                 initialExtreme,
-                (e, c) -> comparator.compare(e, c) > 1,
+                (c, e) -> comparator.compare(c, e) <= 1,
                 collector);
     }
 
