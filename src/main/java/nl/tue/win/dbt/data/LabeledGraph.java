@@ -9,18 +9,22 @@ import java.util.stream.Collectors;
 
 public class LabeledGraph<V, E, L> extends GraphDecorator<V, E> implements Graph<V, E> {
     private final SetMultimap<V, L> labelsMap;
-    private final GraphCreator<E> graphCreator;
+    private final GraphCreator<Graph<LabeledVertex<V, L>, E>, LabeledVertex<V, L>, E> graphCreator;
 
-    public LabeledGraph(GraphCreator<E> graphCreator) {
-        super(graphCreator.create());
+    public LabeledGraph(
+            Graph<V, E> graph,
+            GraphCreator<Graph<LabeledVertex<V, L>, E>, LabeledVertex<V, L>, E> graphCreator) {
+        super(graph);
+        // graphCreator should create graphs with exact same type as graph.
+        // It is not possible to check this at compile time.
         Objects.requireNonNull(graphCreator);
         this.graphCreator = graphCreator;
         this.labelsMap = HashMultimap.create();
     }
 
-    protected LabeledGraph(LabeledGraph<V, E, L> labeledGraph,  GraphCreator<E> graphCreator) {
+    protected LabeledGraph(LabeledGraph<V, E, L> labeledGraph) {
         super(labeledGraph.getImpl());
-        this.graphCreator = graphCreator;
+        this.graphCreator = labeledGraph.graphCreator;
         this.labelsMap = HashMultimap.create(labeledGraph.labelsMap);
     }
 
@@ -80,6 +84,9 @@ public class LabeledGraph<V, E, L> extends GraphDecorator<V, E> implements Graph
     }
 
     public Graph<LabeledVertex<V, L>, E> createLabeledVertexGraph() {
+        // If graphCreator creates a graph of a different type than this.getImpl(),
+        // then the return value might represent a different graph.
+        // It is not possible to do a check at compile time.
         Graph<LabeledVertex<V, L>, E> labeledVertexGraph = this.graphCreator.create();
 
         Map<V, LabeledVertex<V, L>> lvs = new HashMap<>();

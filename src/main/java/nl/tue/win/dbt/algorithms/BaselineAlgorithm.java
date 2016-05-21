@@ -140,7 +140,7 @@ public class BaselineAlgorithm {
     private static <V, E, L> Set<LabeledGraph<V, E, L>> queryIsomorphicSubgraphs2(
             final LabeledGraph<V, E, L> graph,
             final LabeledGraph<V, E, L> pattern,
-            final GraphCreator<E> graphCreator) {
+            final GraphCreator<? extends LabeledGraph<V, E, L>, V, E> graphCreator) {
 
         Comparator<E> edgeComparator = null;
         Comparator<V> vertexComparator = new Comparator<V>() {
@@ -193,11 +193,11 @@ public class BaselineAlgorithm {
             final LabeledGraph<V, E, L> graph,
             final LabeledGraph<V, E, L> pattern,
             final GraphMapping<V, E> mapping,
-            final GraphCreator<E> graphCreator) {
+            final GraphCreator<? extends LabeledGraph<V, E, L>, V, E> graphCreator) {
         // TODO: check if direction is correct
         final boolean direction = false; // From pattern to graph
 
-        LabeledGraph<V, E, L> match = new LabeledGraph<>(graphCreator.create());
+        LabeledGraph<V, E, L> match = graphCreator.create();
         boolean added;
         for(V vertex: pattern.vertexSet()) {
             vertex = mapping.getVertexCorrespondence(vertex, direction);
@@ -222,7 +222,7 @@ public class BaselineAlgorithm {
     private static <V, E, L> Set<LabeledGraph<V, E, L>> queryIsomorphicSubgraphs(
             final LabeledGraph<V, E, L> graph,
             final LabeledGraph<V, E, L> pattern,
-            final GraphCreator<E> graphCreator) {
+            final GraphCreator<? extends LabeledGraph<V, E, L>, V, E> graphCreator) {
         Graph<LabeledVertex<V, L>, E> labeledGraph;
         labeledGraph = graph.createLabeledVertexGraph();
         Graph<LabeledVertex<V, L>, E> labeledPatternGraph;
@@ -252,11 +252,11 @@ public class BaselineAlgorithm {
             final Graph<LabeledVertex<V, L>, E> labeledGraph,
             final Graph<LabeledVertex<V, L>, E> labeledPatternGraph,
             final GraphMapping<LabeledVertex<V, L>, E> mapping,
-            final GraphCreator<E> graphCreator) {
+            final GraphCreator<? extends LabeledGraph<V, E, L>, V, E> graphCreator) {
         // TODO: check if direction is correct
         final boolean direction = false; // From pattern to graph
 
-        LabeledGraph<V, E, L> match = new LabeledGraph<>(graphCreator.create());
+        LabeledGraph<V, E, L> match = graphCreator.create();
         V v;
         boolean added;
         for(LabeledVertex<V, L> lv: labeledPatternGraph.vertexSet()) {

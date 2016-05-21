@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 
 public class HistoryGraph<G extends Graph<V, E>, V, E> extends ArrayList<G> {
 
-    private final GraphCreator<E> graphCreator;
+    private final GraphCreator<G, V, E> graphCreator;
 
-    public HistoryGraph(GraphCreator<E> graphCreator) {
+    public HistoryGraph(GraphCreator<G, V, E> graphCreator) {
         Objects.requireNonNull(graphCreator);
         this.graphCreator = graphCreator;
     }
@@ -161,7 +161,7 @@ public class HistoryGraph<G extends Graph<V, E>, V, E> extends ArrayList<G> {
         return ranges;
     }
 
-    public GraphCreator<E> getGraphCreator() {
+    public GraphCreator<G, V, E> getGraphCreator() {
         return this.graphCreator;
     }
 

@@ -15,14 +15,14 @@ public class DurablePatternAlgorithm<V, E, L> {
     private final BitSet intervals;
     private final boolean collective;
     private final Configuration config;
-    private final GraphCreator<E> graphCreator;
+    private final GraphCreator<LabeledGraph<V, E, L>, V, E> graphCreator;
     private final List<V> vertices;
     private final Set<Lifespan<LabeledGraph<V, E, L>>> matches;
 
     private int threshold;
 
     private DurablePatternAlgorithm(
-            final LabeledHistoryGraph<? extends LabeledGraph<V, E, L>, V, E, L> historyGraph,
+            final LabeledHistoryGraph<LabeledGraph<V, E, L>, V, E, L> historyGraph,
             final LabeledGraph<V, E, L> pattern,
             final RangeSet<Integer> intervals,
             final boolean collective) {
@@ -30,7 +30,7 @@ public class DurablePatternAlgorithm<V, E, L> {
     }
 
     private DurablePatternAlgorithm(
-            LabeledHistoryGraph<? extends LabeledGraph<V, E, L>, V, E, L> historyGraph,
+            LabeledHistoryGraph<LabeledGraph<V, E, L>, V, E, L> historyGraph,
             final LabeledGraph<V, E, L> pattern,
             final RangeSet<Integer> intervals,
             final boolean collective,
@@ -48,7 +48,7 @@ public class DurablePatternAlgorithm<V, E, L> {
             final LabeledGraph<V, E, L> pattern,
             final BitSet intervals,
             final boolean collective,
-            final GraphCreator<E> graphCreator) {
+            final GraphCreator<LabeledGraph<V, E, L>, V , E> graphCreator) {
         this(lvg, pattern, intervals, collective, graphCreator, new Configuration());
     }
 
@@ -57,7 +57,7 @@ public class DurablePatternAlgorithm<V, E, L> {
             final LabeledGraph<V, E, L> pattern,
             final BitSet intervals,
             final boolean collective,
-            final GraphCreator<E> graphCreator,
+            final GraphCreator<LabeledGraph<V, E, L>, V, E> graphCreator,
             final Configuration config) {
         Objects.requireNonNull(lvg);
         Objects.requireNonNull(pattern);
@@ -79,7 +79,7 @@ public class DurablePatternAlgorithm<V, E, L> {
 
     public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>>
     queryMaximalCollectiveDurableGraphPattern(
-            final LabeledHistoryGraph<? extends LabeledGraph<V, E, L>, V, E, L> graph,
+            final LabeledHistoryGraph<LabeledGraph<V, E, L>, V, E, L> graph,
             final LabeledGraph<V, E, L> pattern,
             final RangeSet<Integer> intervals,
             final Configuration config) {
@@ -93,7 +93,7 @@ public class DurablePatternAlgorithm<V, E, L> {
 
     public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>>
     queryMaximalCollectiveDurableGraphPattern(
-            final LabeledHistoryGraph<? extends LabeledGraph<V, E, L>, V, E, L> graph,
+            final LabeledHistoryGraph<LabeledGraph<V, E, L>, V, E, L> graph,
             final LabeledGraph<V, E, L> pattern,
             final RangeSet<Integer> intervals) {
         return queryMaximalCollectiveDurableGraphPattern(
@@ -105,7 +105,7 @@ public class DurablePatternAlgorithm<V, E, L> {
 
     public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>>
     queryMaximalCollectiveDurableGraphPattern(
-            final LabeledHistoryGraph<? extends LabeledGraph<V, E, L>, V, E, L> graph,
+            final LabeledHistoryGraph<LabeledGraph<V, E, L>, V, E, L> graph,
             final LabeledGraph<V, E, L> pattern) {
         return queryMaximalCollectiveDurableGraphPattern(
                 graph,
@@ -115,7 +115,7 @@ public class DurablePatternAlgorithm<V, E, L> {
 
     public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>>
     queryMaximalContinuousDurableGraphPattern(
-            final LabeledHistoryGraph<? extends LabeledGraph<V, E, L>, V, E, L> graph,
+            final LabeledHistoryGraph<LabeledGraph<V, E, L>, V, E, L> graph,
             final LabeledGraph<V, E, L> pattern,
             final RangeSet<Integer> intervals,
             final Configuration config) {
@@ -129,7 +129,7 @@ public class DurablePatternAlgorithm<V, E, L> {
 
     public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>>
     queryMaximalContinuousDurableGraphPattern(
-            final LabeledHistoryGraph<? extends LabeledGraph<V, E, L>, V, E, L> graph,
+            final LabeledHistoryGraph<LabeledGraph<V, E, L>, V, E, L> graph,
             final LabeledGraph<V, E, L> pattern,
             final RangeSet<Integer> intervals) {
         return queryMaximalContinuousDurableGraphPattern(
@@ -141,7 +141,7 @@ public class DurablePatternAlgorithm<V, E, L> {
 
     public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>>
     queryMaximalContinuousDurableGraphPattern(
-            final LabeledHistoryGraph<? extends LabeledGraph<V, E, L>, V, E, L> graph,
+            final LabeledHistoryGraph<LabeledGraph<V, E, L>, V, E, L> graph,
             final LabeledGraph<V, E, L> pattern) {
         return queryMaximalContinuousDurableGraphPattern(
                 graph,

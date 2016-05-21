@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class LabeledHistoryGraph <G extends LabeledGraph<V, E, L>, V, E, L> extends HistoryGraph<G, V, E> {
-    public LabeledHistoryGraph(GraphCreator<E> graphCreator) {
+    public LabeledHistoryGraph(GraphCreator<G, V, E> graphCreator) {
         super(graphCreator);
     }
 

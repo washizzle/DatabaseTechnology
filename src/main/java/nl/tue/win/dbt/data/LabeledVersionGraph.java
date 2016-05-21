@@ -15,8 +15,8 @@ public class LabeledVersionGraph<V, E, L> extends LabeledGraph<V, E, L>{
     private final Map<E, BitSet> edgeLifespans;
     private final Table<V, L, BitSet> labelLifespans;
 
-    public LabeledVersionGraph(GraphCreator<E> graphCreator, int size) {
-        super(graphCreator);
+    public LabeledVersionGraph(int size) {
+        super(null); // TODO
         if(size <= 0) {
             throw new IllegalArgumentException("An LVG requires a positive size");
         }
@@ -28,7 +28,7 @@ public class LabeledVersionGraph<V, E, L> extends LabeledGraph<V, E, L>{
 
     public <G extends LabeledGraph<V, E, L>> LabeledVersionGraph(
             final LabeledHistoryGraph<G, V, E, L> historyGraph) {
-        super(historyGraph.flatten(), historyGraph.getGraphCreator());
+        super(historyGraph.flatten());
         this.size = historyGraph.size();
 
         this.vertexLifespans = new HashMap<>();
