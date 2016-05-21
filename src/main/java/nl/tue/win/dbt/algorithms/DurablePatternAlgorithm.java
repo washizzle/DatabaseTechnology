@@ -372,16 +372,15 @@ public class DurablePatternAlgorithm<V, E, L> {
 
     private RangeSet<Integer> calculateMatchRangeSet(BitSet intervals) {
         RangeSet<Integer> rangeSet = TreeRangeSet.create();
-        int setIndex = 0;
+        int setIndex = intervals.nextSetBit(0);
         int unsetIndex;
-        do {
-            setIndex = intervals.nextSetBit(setIndex);
+        while(setIndex >= 0) {
             unsetIndex = intervals.nextClearBit(setIndex);
             if(this.collective || unsetIndex - setIndex == this.threshold) {
                 rangeSet.add(IntegerRanges.closed(setIndex, unsetIndex -1));
             }
-            setIndex = unsetIndex + 1;
-        } while(setIndex >= 0);
+            setIndex = intervals.nextSetBit(unsetIndex + 1);
+        }
         return rangeSet;
     }
 }
