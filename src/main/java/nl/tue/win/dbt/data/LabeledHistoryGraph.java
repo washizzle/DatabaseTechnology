@@ -25,6 +25,17 @@ public class LabeledHistoryGraph <G extends LabeledGraph<V, E, L>, V, E, L> exte
     }
 
     @Override
+    public G flatten() {
+        G graph = super.flatten();
+        for(G g: this) {
+            for(V v: g.vertexSet()) {
+                graph.addAllLabels(v, g.getLabels(v));
+            }
+        }
+        return graph;
+    }
+
+    @Override
     public String toString() {
         return "LabeledHistoryGraph{}";
     }
