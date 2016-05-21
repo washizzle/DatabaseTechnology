@@ -329,9 +329,8 @@ public class DurablePatternAlgorithm<V, E, L> {
             final int vertexIndex,
             final V candidate,
             final SetMultimap<V, V> candidates) {
-        V vertex = this.vertices.get(vertexIndex);
         for(int i=0; i < vertexIndex; i++) {
-            if(candidates.get(vertex).contains(candidate)) {
+            if(candidates.get(this.vertices.get(i)).contains(candidate)) {
                 return false;
             }
         }
