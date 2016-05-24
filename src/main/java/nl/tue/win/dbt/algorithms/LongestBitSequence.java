@@ -53,11 +53,13 @@ public interface LongestBitSequence {
 
         private int count(BitSet bs, boolean state) {
             int max = 0;
+            int length = 0;
             for (int i = 0; i < bs.length(); i++) {
                 if(bs.get(i) == state) {
-                    ++max;
+                    ++length;
                 } else {
-                    max = 0;
+                    max = length;
+                    length = 0;
                 }
             }
             return max;
