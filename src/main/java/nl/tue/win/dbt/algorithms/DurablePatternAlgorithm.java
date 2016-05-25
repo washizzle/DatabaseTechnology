@@ -5,6 +5,7 @@ import com.google.common.collect.RangeSet;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.TreeRangeSet;
 import nl.tue.win.dbt.Configuration;
+import nl.tue.win.dbt.algorithms.TimeIndices.candidatefilters.CandidateFilter;
 import nl.tue.win.dbt.data.*;
 import nl.tue.win.dbt.util.Graphs;
 import nl.tue.win.dbt.util.IntegerRangeSets;
@@ -19,6 +20,7 @@ public class DurablePatternAlgorithm<V, E, L> {
     private final BitSet intervals;
     private final boolean collective;
     private final Configuration config;
+    private final CandidateFilter<V, E, L> candidateFilter;
     private final GraphCreator<LabeledGraph<V, E, L>, V, E> graphCreator;
     private final List<V> vertices;
     private final Set<Lifespan<LabeledGraph<V, E, L>>> matches;
@@ -75,6 +77,7 @@ public class DurablePatternAlgorithm<V, E, L> {
         this.collective = collective;
         this.graphCreator = graphCreator;
         this.config = config;
+        this.candidateFilter = config.createCandidateFilter(this.lvg);
         this.vertices = new ArrayList<>(this.pattern.vertexSet());
 
         this.threshold = 1;
@@ -177,7 +180,7 @@ public class DurablePatternAlgorithm<V, E, L> {
     }
 
     private Set<V> filterCandidates(final V patternVertex) {
-        return this.config.filterCandidates(this.lvg, this.pattern, patternVertex, intervals);
+        return this.candidateFilter.filterCandidates(this.pattern, patternVertex, intervals);
     }
 
     private SetMultimap<V, V> refineCandidates(final SetMultimap<V, V> candidates) {

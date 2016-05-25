@@ -4,6 +4,7 @@ import nl.tue.win.dbt.algorithms.Intersection;
 import nl.tue.win.dbt.algorithms.LongestBitSequence;
 import nl.tue.win.dbt.algorithms.TimeIndices.Ctinla;
 import nl.tue.win.dbt.algorithms.TimeIndices.TimeIndex;
+import nl.tue.win.dbt.algorithms.TimeIndices.candidatefilters.CandidateFilter;
 import nl.tue.win.dbt.data.LabeledGraph;
 import nl.tue.win.dbt.data.LabeledVersionGraph;
 
@@ -65,11 +66,8 @@ public class Configuration implements Intersection, LongestBitSequence, TimeInde
     }
 
     @Override
-    public <V, E, L> Set<V> filterCandidates(
-            LabeledVersionGraph<V, E, L> lvg,
-            LabeledGraph<V, E, L> pattern,
-            V patternVertex,
-            BitSet intervals) {
-        return this.ti.filterCandidates(lvg, pattern, patternVertex, intervals);
+    public <V, E, L> CandidateFilter<V, E, L> createCandidateFilter(
+            final LabeledVersionGraph<V, E, L> lvg) {
+        return this.ti.createCandidateFilter(lvg);
     }
 }
