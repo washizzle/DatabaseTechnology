@@ -9,6 +9,7 @@ import nl.tue.win.dbt.util.Graphs;
 import java.io.Serializable;
 import java.util.*;
 
+// class CtinlaFilter implements CTINLA time index and uses generic data types for Vertices, Edges and Labels
 public class CtinlaFilter<V, E, L> implements CandidateFilter<V, E, L>, Serializable {
 
     // variables for lvg, radius, nodes, labels and ctinla time index
@@ -131,10 +132,22 @@ public class CtinlaFilter<V, E, L> implements CandidateFilter<V, E, L>, Serializ
 
                 // for each possible node
                 for (V node : this.nodes) {
-                    // if sum of counters is greater than 0, there is at least one occurrence, therefore node is added to candidate set
+
+                    boolean match = false;
+                    // check for all time instants of given interval if there is at least one occurrence of the current label
+                    for (int i = intervals.nextSetBit(0); i < intervals.length(); i++) {
+                        if (ctinla.get(r).get(node, c_label).get(i) > 0) {
+                            match = true;
+                        }
+                    }
+
+                    if (match)
+                        candidates.add(node);
+
+                    /*// if sum of counters is greater than 0, there is at least one occurrence, therefore node is added to candidate set
                     if (ctinla.get(r).get(node, c_label).stream().mapToInt(Integer::intValue).sum() > 0) {
                         candidates.add(node);
-                    }
+                    }*/
                 }
             }
 
@@ -162,8 +175,8 @@ public class CtinlaFilter<V, E, L> implements CandidateFilter<V, E, L>, Serializ
                     //System.out.println("Counters Node " + node + ": " + cnt);
 
                     boolean total_match = false;
-                    // check for all time instants
-                    for (int i = 0; i < this.lvg.getSize(); i++) {
+                    // check for all time instants of given interval
+                    for (int i = intervals.nextSetBit(0); i < intervals.length(); i++) {
 
                         boolean match = true;
                         // check if pattern node and pattern neighbors exist at the same time instant
