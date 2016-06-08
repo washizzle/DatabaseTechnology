@@ -1,11 +1,15 @@
 package nl.tue.win.dbt;
 
 import nl.tue.win.dbt.algorithms.Intersection;
+import nl.tue.win.dbt.algorithms.IsomorphicSubgraphFinder;
+import nl.tue.win.dbt.algorithms.LabeledVertexSubgraphFinder;
 import nl.tue.win.dbt.algorithms.LongestBitSequence;
 import nl.tue.win.dbt.algorithms.TimeIndices.Ctinla;
+import nl.tue.win.dbt.algorithms.IsomorphicSubgraphFinderCreator;
 import nl.tue.win.dbt.algorithms.TimeIndices.TimeIndex;
 import nl.tue.win.dbt.algorithms.TimeIndices.candidatefilters.CandidateFilter;
 import nl.tue.win.dbt.data.LabeledGraph;
+import nl.tue.win.dbt.data.LabeledHistoryGraph;
 import nl.tue.win.dbt.data.LabeledVersionGraph;
 
 import java.io.Serializable;
@@ -13,15 +17,18 @@ import java.util.BitSet;
 import java.util.Objects;
 import java.util.Set;
 
-public class Configuration implements Intersection, LongestBitSequence, TimeIndex, Serializable {
+public class Configuration implements Intersection, IsomorphicSubgraphFinderCreator,
+        LongestBitSequence, TimeIndex, Serializable {
     private Intersection intersection;
+    private IsomorphicSubgraphFinderCreator isfCreator;
     private LongestBitSequence lbs;
     private TimeIndex ti;
 
     public Configuration() {
         this.intersection = new Intersection.SmallestContainsIntersection();
-        this.lbs = new SimpleLongestBitSequence();
         this.ti = new Ctinla();
+        this.lbs = new SimpleLongestBitSequence();
+        this.isfCreator = LabeledVertexSubgraphFinder::new;
     }
 
     public Intersection getIntersection() {
@@ -31,6 +38,15 @@ public class Configuration implements Intersection, LongestBitSequence, TimeInde
     public void setIntersection(Intersection intersection) {
         Objects.requireNonNull(intersection);
         this.intersection = intersection;
+    }
+
+    public IsomorphicSubgraphFinderCreator getIsfCreator() {
+        return this.isfCreator;
+    }
+
+    public void setIsfCreator(IsomorphicSubgraphFinderCreator isfCreator) {
+        Objects.requireNonNull(isfCreator);
+        this.isfCreator = isfCreator;
     }
 
     public LongestBitSequence getLbs() {
@@ -70,5 +86,11 @@ public class Configuration implements Intersection, LongestBitSequence, TimeInde
     public <V, E, L> CandidateFilter<V, E, L> createCandidateFilter(
             final LabeledVersionGraph<V, E, L> lvg) {
         return this.ti.createCandidateFilter(lvg);
+    }
+
+    @Override
+    public <V, E, L> IsomorphicSubgraphFinder<V, E, L> createIsomorphicSubgraphFinder(
+            final LabeledHistoryGraph<LabeledGraph<V, E, L>, V, E, L> lhg) {
+        return isfCreator.createIsomorphicSubgraphFinder(lhg);
     }
 }
