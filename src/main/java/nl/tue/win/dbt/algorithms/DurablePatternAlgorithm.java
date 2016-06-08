@@ -13,7 +13,7 @@ import nl.tue.win.dbt.util.IntegerRanges;
 
 import java.util.*;
 
-public class DurablePatternAlgorithm<V, E, L> {
+public class DurablePatternAlgorithm<V, E, L> implements DurablePattern<V, E, L> {
 
     private final LabeledVersionGraph<V, E, L> lvg;
     private final Configuration config;
@@ -126,22 +126,26 @@ public class DurablePatternAlgorithm<V, E, L> {
                 graph.lifespan());
     }
 
+    @Override
     public Set<Lifespan<LabeledGraph<V, E, L>>> queryMaximalCollectiveDurableGraphPattern(
             final LabeledGraph<V, E, L> pattern) {
         return this.query(pattern, new BitSet(this.lvg.getSize()), true);
     }
 
+    @Override
     public Set<Lifespan<LabeledGraph<V, E, L>>> queryMaximalCollectiveDurableGraphPattern(
             final LabeledGraph<V, E, L> pattern,
             final RangeSet<Integer> intervals) {
         return this.query(pattern, IntegerRangeSets.toBitSet(intervals), true);
     }
 
+    @Override
     public Set<Lifespan<LabeledGraph<V, E, L>>> queryMaximalContinuousDurableGraphPattern(
             final LabeledGraph<V, E, L> pattern) {
         return this.query(pattern, new BitSet(this.lvg.getSize()), false);
     }
 
+    @Override
     public Set<Lifespan<LabeledGraph<V, E, L>>> queryMaximalContinuousDurableGraphPattern(
             final LabeledGraph<V, E, L> pattern,
             final RangeSet<Integer> intervals) {
