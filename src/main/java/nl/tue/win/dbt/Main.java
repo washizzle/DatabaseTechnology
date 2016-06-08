@@ -11,6 +11,7 @@ import nl.tue.win.dbt.data.Lifespan;
 import nl.tue.win.dbt.util.IntegerRanges;
 import org.jgrapht.graph.DefaultDirectedGraph;
 
+import java.io.*;
 import java.util.Set;
 
 /**
@@ -31,18 +32,29 @@ public class Main {
                 String> lhg;
         lhg = createLabeledHistoryGraph();
 
+        writeToFile(lhg, "data/lhg.ser");
+        lhg = readFromFile("data/lhg.ser");
+
         RangeSet<Integer> intervals = TreeRangeSet.create();
         intervals.add(IntegerRanges.closed(1, 5));
 
+        BaselineAlgorithm<Integer, Edge, String> base = new BaselineAlgorithm<>(lhg);
+        writeToFile(base, "data/base.ser");
+        base = readFromFile("data/base.ser");
+
+        DurablePatternAlgorithm<Integer, Edge, String> dur = new DurablePatternAlgorithm<>(lhg);
+        writeToFile(dur, "data/dur.ser");
+        dur = readFromFile("data/dur.ser");
+
         Set<Lifespan<LabeledGraph<Integer, Edge, String>>> baselineCon;
-        baselineCon = BaselineAlgorithm.queryMaximalContinuousDurableGraphPattern(lhg, pattern, intervals);
+        baselineCon = base.queryMaximalContinuousDurableGraphPattern(pattern, intervals);
         Set<Lifespan<LabeledGraph<Integer, Edge, String>>> baselineCol;
-        baselineCol = BaselineAlgorithm.queryMaximalCollectiveDurableGraphPattern(lhg, pattern, intervals);
+        baselineCol = base.queryMaximalCollectiveDurableGraphPattern(pattern, intervals);
 
         Set<Lifespan<LabeledGraph<Integer, Edge, String>>> algoCon;
-        algoCon = DurablePatternAlgorithm.queryMaximalContinuousDurableGraphPattern(lhg, pattern, intervals);
+        algoCon = dur.queryMaximalContinuousDurableGraphPattern(pattern, intervals);
         Set<Lifespan<LabeledGraph<Integer, Edge, String>>> algoCol;
-        algoCol = DurablePatternAlgorithm.queryMaximalCollectiveDurableGraphPattern(lhg, pattern, intervals);
+        algoCol = dur.queryMaximalCollectiveDurableGraphPattern(pattern, intervals);
 
         System.out.println("Continuous");
         System.out.println(baselineCon);
@@ -136,5 +148,22 @@ public class Main {
         graph.addLabel(3, "C");
         graph.addLabel(4, "X");
         graph.addLabel(5, "Y");
+    }
+
+    private static <T> void writeToFile(T t, String filename) {
+        try(ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))) {
+            out.writeObject(t);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> T readFromFile(String filename) {
+        try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))) {
+            return (T) in.readObject();
+        } catch (ClassNotFoundException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -5,9 +5,10 @@ import com.google.common.collect.SetMultimap;
 import nl.tue.win.dbt.data.LabeledGraph;
 import nl.tue.win.dbt.data.LabeledVersionGraph;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class TilaFilter<V, E, L> implements CandidateFilter<V, E, L> {
+public class TilaFilter<V, E, L> implements CandidateFilter<V, E, L>, Serializable {
     private final LabeledVersionGraph<V, E, L> lvg;
     private final List<SetMultimap<L, V>> tila;
 

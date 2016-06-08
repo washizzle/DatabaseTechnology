@@ -5,10 +5,11 @@ import com.google.common.collect.RangeSet;
 import com.google.common.collect.Table;
 import nl.tue.win.dbt.util.IntegerRangeSets;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.function.Function;
 
-public class LabeledVersionGraph<V, E, L> extends LabeledGraph<V, E, L>{
+public class LabeledVersionGraph<V, E, L> extends LabeledGraph<V, E, L> implements Serializable {
     private final int size;
 
     private final Map<V, BitSet> vertexLifespans;

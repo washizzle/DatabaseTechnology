@@ -1,14 +1,15 @@
 package nl.tue.win.dbt.algorithms;
 
+import java.io.Serializable;
 import java.util.BitSet;
 import java.util.function.BinaryOperator;
 
-public interface LongestBitSequence {
+public interface LongestBitSequence extends Serializable {
     int longestSetBits(final BitSet bs);
     int longestUnsetBits(final BitSet bs);
 
     // https://stackoverflow.com/questions/35244340/longest-sequence-of-numbers
-    class LinearLongestBitSequence implements LongestBitSequence {
+    class LinearLongestBitSequence implements LongestBitSequence, Serializable {
 
         @Override
         public int longestSetBits(final BitSet bs) {
@@ -39,7 +40,7 @@ public interface LongestBitSequence {
         }
     }
 
-    class SimpleLongestBitSequence implements LongestBitSequence {
+    class SimpleLongestBitSequence implements LongestBitSequence, Serializable {
 
         @Override
         public int longestSetBits(BitSet bs) {

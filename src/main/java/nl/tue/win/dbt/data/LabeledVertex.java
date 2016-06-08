@@ -1,10 +1,11 @@
 package nl.tue.win.dbt.data;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class LabeledVertex<V, L> {
+public class LabeledVertex<V, L> implements Serializable {
     private final V data;
     private final Set<L> labels;
 

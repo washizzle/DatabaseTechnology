@@ -1,16 +1,15 @@
 package nl.tue.win.dbt.algorithms.TimeIndices.candidatefilters;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import nl.tue.win.dbt.data.LabeledGraph;
 import nl.tue.win.dbt.data.LabeledVersionGraph;
 import nl.tue.win.dbt.util.Graphs;
 
+import java.io.Serializable;
 import java.util.*;
 
-import com.google.common.collect.Table;
-import com.google.common.collect.HashBasedTable;
-
-// class CtinlaFilter implements CTINLA time index and uses generic data types for Vertices, Edges and Labels
-public class CtinlaFilter<V, E, L> implements CandidateFilter<V, E, L> {
+public class CtinlaFilter<V, E, L> implements CandidateFilter<V, E, L>, Serializable {
 
     // variables for lvg, radius, nodes, labels and ctinla time index
     private final LabeledVersionGraph<V, E, L> lvg;

@@ -3,11 +3,12 @@ package nl.tue.win.dbt.data;
 import org.jgrapht.EdgeFactory;
 import org.jgrapht.Graph;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 
-public class GraphDecorator<V, E> implements Graph<V,E> {
+public class GraphDecorator<V, E> implements Graph<V,E>, Serializable {
     private final Graph<V, E> impl;
 
     public GraphDecorator(Graph<V, E> impl) {

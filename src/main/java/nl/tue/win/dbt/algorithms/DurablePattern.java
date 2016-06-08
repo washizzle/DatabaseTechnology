@@ -4,9 +4,10 @@ import com.google.common.collect.RangeSet;
 import nl.tue.win.dbt.data.LabeledGraph;
 import nl.tue.win.dbt.data.Lifespan;
 
+import java.io.Serializable;
 import java.util.Set;
 
-public interface DurablePattern<V, E, L> {
+public interface DurablePattern<V, E, L> extends Serializable {
     Set<Lifespan<LabeledGraph<V, E, L>>> queryMaximalCollectiveDurableGraphPattern(
             LabeledGraph<V, E, L> pattern);
 

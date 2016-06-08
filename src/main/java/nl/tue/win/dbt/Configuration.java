@@ -8,11 +8,12 @@ import nl.tue.win.dbt.algorithms.TimeIndices.candidatefilters.CandidateFilter;
 import nl.tue.win.dbt.data.LabeledGraph;
 import nl.tue.win.dbt.data.LabeledVersionGraph;
 
+import java.io.Serializable;
 import java.util.BitSet;
 import java.util.Objects;
 import java.util.Set;
 
-public class Configuration implements Intersection, LongestBitSequence, TimeIndex {
+public class Configuration implements Intersection, LongestBitSequence, TimeIndex, Serializable {
     private Intersection intersection;
     private LongestBitSequence lbs;
     private TimeIndex ti;

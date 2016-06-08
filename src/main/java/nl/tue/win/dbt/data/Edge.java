@@ -2,7 +2,9 @@ package nl.tue.win.dbt.data;
 
 import org.jgrapht.graph.DefaultEdge;
 
-public class Edge extends DefaultEdge {
+import java.io.Serializable;
+
+public class Edge extends DefaultEdge implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

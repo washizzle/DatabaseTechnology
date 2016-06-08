@@ -2,15 +2,16 @@ package nl.tue.win.dbt.algorithms;
 
 import com.google.common.collect.Sets;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public interface Intersection {
+public interface Intersection extends Serializable {
     <T> Set<T> intersect(Set<T> set1, Set<T> set2);
 
-    class RetainAllIntersection implements Intersection {
+    class RetainAllIntersection implements Intersection, Serializable {
         @Override
         public <T> Set<T> intersect(Set<T> set1, Set<T> set2) {
             Objects.requireNonNull(set1);
@@ -22,7 +23,7 @@ public interface Intersection {
         }
     }
 
-    class SmallestContainsIntersection implements Intersection {
+    class SmallestContainsIntersection implements Intersection, Serializable {
         @Override
         public <T> Set<T> intersect(Set<T> set1, Set<T> set2) {
             Objects.requireNonNull(set1);
@@ -40,7 +41,7 @@ public interface Intersection {
         }
     }
 
-    class SmallestContainsStreamIntersection implements Intersection {
+    class SmallestContainsStreamIntersection implements Intersection, Serializable {
         public <T> Set<T> intersect(Set<T> set1, Set<T> set2) {
             Objects.requireNonNull(set1);
             Objects.requireNonNull(set2);
@@ -51,7 +52,7 @@ public interface Intersection {
         }
     }
 
-    class GuavaIntersection implements Intersection {
+    class GuavaIntersection implements Intersection, Serializable {
         @Override
         public <T> Set<T> intersect(Set<T> set1, Set<T> set2) {
             Objects.requireNonNull(set1);

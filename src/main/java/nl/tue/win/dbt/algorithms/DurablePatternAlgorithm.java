@@ -11,9 +11,10 @@ import nl.tue.win.dbt.util.Graphs;
 import nl.tue.win.dbt.util.IntegerRangeSets;
 import nl.tue.win.dbt.util.IntegerRanges;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class DurablePatternAlgorithm<V, E, L> implements DurablePattern<V, E, L> {
+public class DurablePatternAlgorithm<V, E, L> implements DurablePattern<V, E, L>, Serializable {
 
     private final LabeledVersionGraph<V, E, L> lvg;
     private final Configuration config;

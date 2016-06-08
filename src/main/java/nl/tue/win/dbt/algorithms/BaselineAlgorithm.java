@@ -10,10 +10,11 @@ import org.jgrapht.GraphMapping;
 import org.jgrapht.alg.isomorphism.IsomorphismInspector;
 import org.jgrapht.alg.isomorphism.VF2SubgraphIsomorphismInspector;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class BaselineAlgorithm<V, E, L> implements DurablePattern<V, E, L> {
+public class BaselineAlgorithm<V, E, L> implements DurablePattern<V, E, L>, Serializable {
     private final LabeledHistoryGraph<LabeledGraph<V, E, L>, V, E, L> lhg;
     private final List<Graph<LabeledVertex<V, L>, E>> labeledGraphs;
 

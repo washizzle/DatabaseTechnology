@@ -6,13 +6,14 @@ import nl.tue.win.dbt.util.IntegerRanges;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntPredicate;
 import java.util.stream.Collectors;
 
-public class HistoryGraph<G extends Graph<V, E>, V, E> extends ArrayList<G> {
+public class HistoryGraph<G extends Graph<V, E>, V, E> extends ArrayList<G> implements Serializable{
 
     private final GraphCreator<G, V, E> graphCreator;
 

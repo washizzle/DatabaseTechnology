@@ -2,10 +2,11 @@ package nl.tue.win.dbt.data;
 
 import com.google.common.collect.RangeSet;
 
+import java.io.Serializable;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class LabeledHistoryGraph <G extends LabeledGraph<V, E, L>, V, E, L> extends HistoryGraph<G, V, E> {
+public class LabeledHistoryGraph <G extends LabeledGraph<V, E, L>, V, E, L> extends HistoryGraph<G, V, E>  implements Serializable {
     public LabeledHistoryGraph(GraphCreator<G, V, E> graphCreator) {
         super(graphCreator);
     }

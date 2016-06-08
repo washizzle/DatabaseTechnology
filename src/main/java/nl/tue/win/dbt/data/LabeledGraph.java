@@ -4,10 +4,11 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 import org.jgrapht.Graph;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class LabeledGraph<V, E, L> extends GraphDecorator<V, E> implements Graph<V, E> {
+public class LabeledGraph<V, E, L> extends GraphDecorator<V, E> implements Graph<V, E>, Serializable {
     private final SetMultimap<V, L> labelsMap;
     private final GraphCreator<Graph<LabeledVertex<V, L>, E>, LabeledVertex<V, L>, E> graphCreator;
 
