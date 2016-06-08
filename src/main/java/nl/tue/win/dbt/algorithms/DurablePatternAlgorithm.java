@@ -16,72 +16,50 @@ import java.util.*;
 public class DurablePatternAlgorithm<V, E, L> {
 
     private final LabeledVersionGraph<V, E, L> lvg;
-    private final LabeledGraph<V, E, L> pattern;
-    private final BitSet intervals;
-    private final boolean collective;
     private final Configuration config;
     private final CandidateFilter<V, E, L> candidateFilter;
     private final GraphCreator<LabeledGraph<V, E, L>, V, E> graphCreator;
-    private final List<V> vertices;
-    private final Set<Lifespan<LabeledGraph<V, E, L>>> matches;
 
+    private LabeledGraph<V, E, L> pattern;
+    private BitSet intervals;
+    private boolean collective;
+    private List<V> vertices;
+    private Set<Lifespan<LabeledGraph<V, E, L>>> matches;
     private int threshold;
 
-    private DurablePatternAlgorithm(
-            final LabeledHistoryGraph<LabeledGraph<V, E, L>, V, E, L> historyGraph,
-            final LabeledGraph<V, E, L> pattern,
-            final RangeSet<Integer> intervals,
-            final boolean collective) {
-        this(historyGraph, pattern, intervals, collective, new Configuration());
+    public DurablePatternAlgorithm(
+            final LabeledHistoryGraph<LabeledGraph<V, E, L>, V, E, L> historyGraph) {
+        this(historyGraph, new Configuration());
     }
 
-    private DurablePatternAlgorithm(
+    public DurablePatternAlgorithm(
             LabeledHistoryGraph<LabeledGraph<V, E, L>, V, E, L> historyGraph,
-            final LabeledGraph<V, E, L> pattern,
-            final RangeSet<Integer> intervals,
-            final boolean collective,
             Configuration config) {
         this(new LabeledVersionGraph<>(historyGraph),
-                pattern,
-                IntegerRangeSets.toBitSet(intervals),
-                collective,
                 historyGraph.getGraphCreator(),
                 config);
     }
 
-    private DurablePatternAlgorithm(
+    public DurablePatternAlgorithm(
             final LabeledVersionGraph<V, E, L> lvg,
-            final LabeledGraph<V, E, L> pattern,
-            final BitSet intervals,
-            final boolean collective,
             final GraphCreator<LabeledGraph<V, E, L>, V , E> graphCreator) {
-        this(lvg, pattern, intervals, collective, graphCreator, new Configuration());
+        this(lvg, graphCreator, new Configuration());
     }
 
     public DurablePatternAlgorithm(
             final LabeledVersionGraph<V, E, L> lvg,
-            final LabeledGraph<V, E, L> pattern,
-            final BitSet intervals,
-            final boolean collective,
             final GraphCreator<LabeledGraph<V, E, L>, V, E> graphCreator,
             final Configuration config) {
         Objects.requireNonNull(lvg);
-        Objects.requireNonNull(pattern);
-        Objects.requireNonNull(intervals);
         Objects.requireNonNull(graphCreator);
         Objects.requireNonNull(config);
 
         this.lvg = lvg;
-        this.pattern = pattern;
-        this.intervals = intervals;
-        this.collective = collective;
         this.graphCreator = graphCreator;
         this.config = config;
         this.candidateFilter = config.createCandidateFilter(this.lvg);
-        this.vertices = new ArrayList<>(this.pattern.vertexSet());
 
         this.threshold = 1;
-        this.matches = new HashSet<>();
     }
 
     public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>>
@@ -90,12 +68,8 @@ public class DurablePatternAlgorithm<V, E, L> {
             final LabeledGraph<V, E, L> pattern,
             final RangeSet<Integer> intervals,
             final Configuration config) {
-        return new DurablePatternAlgorithm<>(
-                graph,
-                pattern,
-                intervals,
-                true,
-                config).query();
+        return new DurablePatternAlgorithm<>(graph, config)
+                .queryMaximalCollectiveDurableGraphPattern(pattern, intervals);
     }
 
     public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>>
@@ -126,12 +100,8 @@ public class DurablePatternAlgorithm<V, E, L> {
             final LabeledGraph<V, E, L> pattern,
             final RangeSet<Integer> intervals,
             final Configuration config) {
-        return new DurablePatternAlgorithm<>(
-                graph,
-                pattern,
-                intervals,
-                false,
-                config).query();
+        return new DurablePatternAlgorithm<>(graph, config)
+                .queryMaximalContinuousDurableGraphPattern(pattern, intervals);
     }
 
     public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>>
@@ -156,17 +126,56 @@ public class DurablePatternAlgorithm<V, E, L> {
                 graph.lifespan());
     }
 
-    private Set<Lifespan<LabeledGraph<V, E, L>>> query() {
+    public Set<Lifespan<LabeledGraph<V, E, L>>> queryMaximalCollectiveDurableGraphPattern(
+            final LabeledGraph<V, E, L> pattern) {
+        return this.query(pattern, new BitSet(this.lvg.getSize()), true);
+    }
+
+    public Set<Lifespan<LabeledGraph<V, E, L>>> queryMaximalCollectiveDurableGraphPattern(
+            final LabeledGraph<V, E, L> pattern,
+            final RangeSet<Integer> intervals) {
+        return this.query(pattern, IntegerRangeSets.toBitSet(intervals), true);
+    }
+
+    public Set<Lifespan<LabeledGraph<V, E, L>>> queryMaximalContinuousDurableGraphPattern(
+            final LabeledGraph<V, E, L> pattern) {
+        return this.query(pattern, new BitSet(this.lvg.getSize()), false);
+    }
+
+    public Set<Lifespan<LabeledGraph<V, E, L>>> queryMaximalContinuousDurableGraphPattern(
+            final LabeledGraph<V, E, L> pattern,
+            final RangeSet<Integer> intervals) {
+        return this.query(pattern, IntegerRangeSets.toBitSet(intervals), false);
+    }
+
+    private Set<Lifespan<LabeledGraph<V, E, L>>> query(
+            final LabeledGraph<V, E, L> pattern,
+            final BitSet intervals,
+            final boolean collective) {
+        this.configureAlgorithm(pattern, intervals, collective);
         SetMultimap<V, V> candidates = HashMultimap.create();
-        for(V vertex: this.vertices) {
+        for (V vertex : this.vertices) {
             candidates.putAll(vertex, filterCandidates(vertex));
-            if(candidates.get(vertex).isEmpty()) {
+            if (candidates.get(vertex).isEmpty()) {
                 return this.matches;
             }
         }
         candidates = refineCandidates(candidates);
         durableGraphSearch(0, candidates);
         return this.matches;
+    }
+
+    private void configureAlgorithm(
+            final LabeledGraph<V, E, L> pattern,
+            final BitSet intervals,
+            final boolean collective) {
+        Objects.requireNonNull(pattern);
+        Objects.requireNonNull(intervals);
+        this.pattern = pattern;
+        this.intervals = intervals;
+        this.collective = collective;
+        this.vertices = new ArrayList<>(this.pattern.vertexSet());
+        this.matches = new HashSet<>();
     }
 
     private int calculateDuration(final BitSet intervals) {
