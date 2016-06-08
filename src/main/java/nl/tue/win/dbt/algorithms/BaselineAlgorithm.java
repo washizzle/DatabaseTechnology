@@ -13,49 +13,111 @@ import org.jgrapht.alg.isomorphism.VF2SubgraphIsomorphismInspector;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class BaselineAlgorithm {
-    public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>> queryMaximalCollectiveDurableGraphPattern(
-            final LabeledHistoryGraph<? extends LabeledGraph<V, E, L>, V, E, L> graph,
+public class BaselineAlgorithm<V, E, L> implements DurablePattern<V, E, L> {
+    private final LabeledHistoryGraph<LabeledGraph<V, E, L>, V, E, L> lhg;
+    private final List<Graph<LabeledVertex<V, L>, E>> labeledGraphs;
+
+    public BaselineAlgorithm(
+            final LabeledHistoryGraph<LabeledGraph<V, E, L>, V, E, L> lhg) {
+        Objects.requireNonNull(lhg);
+        this.lhg = lhg;
+        this.labeledGraphs = this.lhg.stream()
+                .map(LabeledGraph::createLabeledVertexGraph)
+                .collect(Collectors.toList());
+    }
+
+    public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>>
+    queryMaximalCollectiveDurableGraphPattern(
+            final LabeledHistoryGraph<LabeledGraph<V, E, L>, V, E, L> graph,
+            final LabeledGraph<V, E, L> pattern,
+            final RangeSet<Integer> intervals) {
+        return new BaselineAlgorithm<>(graph)
+                .queryMaximalCollectiveDurableGraphPattern(pattern, intervals);
+    }
+
+    public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>>
+    queryMaximalCollectiveDurableGraphPattern(
+            final LabeledHistoryGraph<LabeledGraph<V, E, L>, V, E, L> graph,
+            final LabeledGraph<V, E, L> pattern) {
+        return new BaselineAlgorithm<>(graph)
+                .queryMaximalCollectiveDurableGraphPattern(pattern);
+    }
+
+    public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>>
+    queryMinimalCollectiveDurableGraphPattern(
+            final LabeledHistoryGraph<LabeledGraph<V, E, L>, V, E, L> graph,
+            final LabeledGraph<V, E, L> pattern,
+            final RangeSet<Integer> intervals) {
+        return new BaselineAlgorithm<>(graph)
+                .queryMinimalCollectiveDurableGraphPattern(pattern, intervals);
+    }
+
+    public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>>
+    queryMinimalCollectiveDurableGraphPattern(
+            final LabeledHistoryGraph<LabeledGraph<V, E, L>, V, E, L> graph,
+            final LabeledGraph<V, E, L> pattern) {
+        return new BaselineAlgorithm<>(graph)
+                .queryMinimalCollectiveDurableGraphPattern(pattern);
+    }
+
+    public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>>
+    queryMaximalContinuousDurableGraphPattern(
+            final LabeledHistoryGraph<LabeledGraph<V, E, L>, V, E, L> graph,
+            final LabeledGraph<V, E, L> pattern,
+            final RangeSet<Integer> intervals) {
+        return new BaselineAlgorithm<>(graph)
+                .queryMaximalContinuousDurableGraphPattern(pattern, intervals);
+    }
+
+    public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>>
+    queryMaximalContinuousDurableGraphPattern(
+            final LabeledHistoryGraph<LabeledGraph<V, E, L>, V, E, L> graph,
+            final LabeledGraph<V, E, L> pattern) {
+        return new BaselineAlgorithm<>(graph)
+                .queryMaximalContinuousDurableGraphPattern(pattern);
+    }
+
+    public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>>
+    queryMinimalContinuousDurableGraphPattern(
+            final LabeledHistoryGraph<LabeledGraph<V, E, L>, V, E, L> graph,
+            final LabeledGraph<V, E, L> pattern,
+            final RangeSet<Integer> intervals) {
+        return new BaselineAlgorithm<>(graph)
+                .queryMinimalContinuousDurableGraphPattern(pattern, intervals);
+    }
+
+    public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>>
+    queryMinimalContinuousDurableGraphPattern(
+            final LabeledHistoryGraph<LabeledGraph<V, E, L>, V, E, L> graph,
+            final LabeledGraph<V, E, L> pattern) {
+        return new BaselineAlgorithm<>(graph)
+                .queryMinimalContinuousDurableGraphPattern(pattern);
+    }
+
+    @Override
+    public Set<Lifespan<LabeledGraph<V, E, L>>> queryMaximalCollectiveDurableGraphPattern(
             final LabeledGraph<V, E, L> pattern,
             final RangeSet<Integer> intervals) {
         return Iterators.maximalElements(
-                queryDurableGraphPattern(graph, pattern, intervals),
+                this.queryDurableGraphPattern(pattern, intervals),
                 l -> IntegerRangeSets.totalSize(l.getRangeSet()),
                 Comparator.comparing(i -> i),
                 Integer.MIN_VALUE,
                 HashSet::new);
     }
 
-    public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>> queryMaximalCollectiveDurableGraphPattern(
-            final LabeledHistoryGraph<? extends LabeledGraph<V, E, L>, V, E, L> graph,
+    @Override
+    public Set<Lifespan<LabeledGraph<V, E, L>>> queryMaximalCollectiveDurableGraphPattern(
             final LabeledGraph<V, E, L> pattern) {
-        return queryMaximalCollectiveDurableGraphPattern(graph, pattern, graph.lifespan());
+        return this.queryMaximalCollectiveDurableGraphPattern(pattern, this.lhg.lifespan());
     }
 
-    public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>> queryMinimalCollectiveDurableGraphPattern(
-            final LabeledHistoryGraph<? extends LabeledGraph<V, E, L>, V, E, L> graph,
-            final LabeledGraph<V, E, L> pattern,
-            final RangeSet<Integer> intervals) {
-        return Iterators.minimalElements(
-                queryDurableGraphPattern(graph, pattern, intervals),
-                l -> IntegerRangeSets.totalSize(l.getRangeSet()),
-                Comparator.comparing(i -> i),
-                Integer.MAX_VALUE,
-                HashSet::new);
-    }
-
-    public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>> queryMinimalCollectiveDurableGraphPattern(
-            final LabeledHistoryGraph<? extends LabeledGraph<V, E, L>, V, E, L> graph,
-            final LabeledGraph<V, E, L> pattern) {
-        return queryMinimalCollectiveDurableGraphPattern(graph, pattern, graph.lifespan());
-    }
-
-    public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>> queryMaximalContinuousDurableGraphPattern(
-            final LabeledHistoryGraph<? extends LabeledGraph<V, E, L>, V, E, L> graph,
+    @Override
+    public Set<Lifespan<LabeledGraph<V, E, L>>> queryMaximalContinuousDurableGraphPattern(
             final LabeledGraph<V, E, L> pattern,
             final RangeSet<Integer> intervals) {
         return Iterators.maximalElements(
-                queryDurableGraphPattern(graph, pattern, intervals),
+                this.queryDurableGraphPattern(pattern, intervals),
                 l -> IntegerRangeSets.maximumSize(l.getRangeSet()),
                 Comparator.comparing(i -> i),
                 Integer.MIN_VALUE,
@@ -71,18 +133,33 @@ public class BaselineAlgorithm {
                 .collect(Collectors.toSet());
     }
 
-    public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>> queryMaximalContinuousDurableGraphPattern(
-            final LabeledHistoryGraph<? extends LabeledGraph<V, E, L>, V, E, L> graph,
+    @Override
+    public Set<Lifespan<LabeledGraph<V, E, L>>> queryMaximalContinuousDurableGraphPattern(
             final LabeledGraph<V, E, L> pattern) {
-        return queryMaximalContinuousDurableGraphPattern(graph, pattern, graph.lifespan());
+        return this.queryMaximalContinuousDurableGraphPattern(pattern, this.lhg.lifespan());
     }
 
-    public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>> queryMinimalContinuousDurableGraphPattern(
-            final LabeledHistoryGraph<? extends LabeledGraph<V, E, L>, V, E, L> graph,
+    public Set<Lifespan<LabeledGraph<V, E, L>>> queryMinimalCollectiveDurableGraphPattern(
             final LabeledGraph<V, E, L> pattern,
             final RangeSet<Integer> intervals) {
         return Iterators.minimalElements(
-                queryDurableGraphPattern(graph, pattern, intervals),
+                this.queryDurableGraphPattern(pattern, intervals),
+                l -> IntegerRangeSets.totalSize(l.getRangeSet()),
+                Comparator.comparing(i -> i),
+                Integer.MAX_VALUE,
+                HashSet::new);
+    }
+
+    public Set<Lifespan<LabeledGraph<V, E, L>>> queryMinimalCollectiveDurableGraphPattern(
+            final LabeledGraph<V, E, L> pattern) {
+        return this.queryMinimalCollectiveDurableGraphPattern(pattern, this.lhg.lifespan());
+    }
+
+    public Set<Lifespan<LabeledGraph<V, E, L>>> queryMinimalContinuousDurableGraphPattern(
+            final LabeledGraph<V, E, L> pattern,
+            final RangeSet<Integer> intervals) {
+        return Iterators.minimalElements(
+                this.queryDurableGraphPattern(pattern, intervals),
                 l -> IntegerRangeSets.maximumSize(l.getRangeSet()),
                 Comparator.comparing(i -> i),
                 Integer.MAX_VALUE,
@@ -98,26 +175,24 @@ public class BaselineAlgorithm {
                 .collect(Collectors.toSet());
     }
 
-    public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>> queryMinimalContinuousDurableGraphPattern(
-            final LabeledHistoryGraph<? extends LabeledGraph<V, E, L>, V, E, L> graph,
+    public Set<Lifespan<LabeledGraph<V, E, L>>> queryMinimalContinuousDurableGraphPattern(
             final LabeledGraph<V, E, L> pattern) {
-        return queryMinimalContinuousDurableGraphPattern(graph, pattern, graph.lifespan());
+        return this.queryMinimalContinuousDurableGraphPattern(pattern, this.lhg.lifespan());
     }
 
-    public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>> queryDurableGraphPattern(
-            final LabeledHistoryGraph<? extends LabeledGraph<V, E, L>, V, E, L> graph,
+    public Set<Lifespan<LabeledGraph<V, E, L>>> queryDurableGraphPattern(
             final LabeledGraph<V, E, L> pattern,
             final RangeSet<Integer> intervals) {
         Map<LabeledGraph<V, E, L>, Lifespan<LabeledGraph<V, E, L>>> matches;
         matches = new HashMap<>();
-        if(!graph.isEmpty()) {
+        if(!this.lhg.isEmpty()) {
             Set<Integer> timestamps;
             timestamps = IntegerRangeSets.toTimestamps(
-                    IntegerRangeSets.intersect(graph.lifespan(), intervals));
+                    IntegerRangeSets.intersect(this.lhg.lifespan(), intervals));
             Set<LabeledGraph<V, E, L>> subgraphs;
             Lifespan<LabeledGraph<V,E,L>> lifespan;
             for(int t: timestamps) {
-                subgraphs = queryIsomorphicSubgraphs(graph.getGraph(t), pattern, graph.getGraphCreator());
+                subgraphs = queryIsomorphicSubgraphs(t, pattern);
                 for(LabeledGraph<V, E, L> subgraph: subgraphs) {
                     lifespan = matches.get(subgraph);
                     if(lifespan == null) {
@@ -131,17 +206,15 @@ public class BaselineAlgorithm {
         return new HashSet<>(matches.values());
     }
 
-    public static <V, E, L> Set<Lifespan<LabeledGraph<V, E, L>>> queryDurableGraphPattern(
-            final LabeledHistoryGraph<? extends LabeledGraph<V, E, L>, V, E, L> graph,
+    public Set<Lifespan<LabeledGraph<V, E, L>>> queryDurableGraphPattern(
             final LabeledGraph<V, E, L> pattern) {
-        return queryDurableGraphPattern(graph, pattern, graph.lifespan());
+        return this.queryDurableGraphPattern(pattern, this.lhg.lifespan());
     }
 
-    private static <V, E, L> Set<LabeledGraph<V, E, L>> queryIsomorphicSubgraphs2(
-            final LabeledGraph<V, E, L> graph,
-            final LabeledGraph<V, E, L> pattern,
-            final GraphCreator<? extends LabeledGraph<V, E, L>, V, E> graphCreator) {
-
+    private Set<LabeledGraph<V, E, L>> queryIsomorphicSubgraphs2(
+            final int timestamp,
+            final LabeledGraph<V, E, L> pattern) {
+        final LabeledGraph<V, E, L> graph = this.lhg.get(timestamp);
         Comparator<E> edgeComparator = null;
         Comparator<V> vertexComparator = new Comparator<V>() {
             @Override
@@ -183,21 +256,20 @@ public class BaselineAlgorithm {
             Iterator<GraphMapping<V, E>> mappings;
             mappings = inspector.getMappings();
             while(mappings.hasNext()) {
-                matches.add(createLabeledGraph2(graph, pattern, mappings.next(), graphCreator));
+                matches.add(createLabeledGraph2(graph, pattern, mappings.next()));
             }
         }
         return matches;
     }
 
-    private static <V, E, L> LabeledGraph<V, E, L> createLabeledGraph2(
+    private LabeledGraph<V, E, L> createLabeledGraph2(
             final LabeledGraph<V, E, L> graph,
             final LabeledGraph<V, E, L> pattern,
-            final GraphMapping<V, E> mapping,
-            final GraphCreator<? extends LabeledGraph<V, E, L>, V, E> graphCreator) {
+            final GraphMapping<V, E> mapping) {
         // TODO: check if direction is correct
         final boolean direction = false; // From pattern to graph
 
-        LabeledGraph<V, E, L> match = graphCreator.create();
+        LabeledGraph<V, E, L> match = this.lhg.getGraphCreator().create();
         boolean added;
         for(V vertex: pattern.vertexSet()) {
             vertex = mapping.getVertexCorrespondence(vertex, direction);
@@ -219,12 +291,11 @@ public class BaselineAlgorithm {
         return match;
     }
 
-    private static <V, E, L> Set<LabeledGraph<V, E, L>> queryIsomorphicSubgraphs(
-            final LabeledGraph<V, E, L> graph,
-            final LabeledGraph<V, E, L> pattern,
-            final GraphCreator<? extends LabeledGraph<V, E, L>, V, E> graphCreator) {
+    private Set<LabeledGraph<V, E, L>> queryIsomorphicSubgraphs(
+            final int timestamp,
+            final LabeledGraph<V, E, L> pattern) {
         Graph<LabeledVertex<V, L>, E> labeledGraph;
-        labeledGraph = graph.createLabeledVertexGraph();
+        labeledGraph = this.labeledGraphs.get(timestamp);
         Graph<LabeledVertex<V, L>, E> labeledPatternGraph;
         labeledPatternGraph = pattern.createLabeledVertexGraph();
 
@@ -241,22 +312,20 @@ public class BaselineAlgorithm {
                 matches.add(createLabeledGraph(
                         labeledGraph,
                         labeledPatternGraph,
-                        mappings.next(),
-                        graphCreator));
+                        mappings.next()));
             }
         }
         return matches;
     }
 
-    private static <V, E, L> LabeledGraph<V, E, L> createLabeledGraph(
+    private LabeledGraph<V, E, L> createLabeledGraph(
             final Graph<LabeledVertex<V, L>, E> labeledGraph,
             final Graph<LabeledVertex<V, L>, E> labeledPatternGraph,
-            final GraphMapping<LabeledVertex<V, L>, E> mapping,
-            final GraphCreator<? extends LabeledGraph<V, E, L>, V, E> graphCreator) {
+            final GraphMapping<LabeledVertex<V, L>, E> mapping) {
         // TODO: check if direction is correct
         final boolean direction = false; // From pattern to graph
 
-        LabeledGraph<V, E, L> match = graphCreator.create();
+        LabeledGraph<V, E, L> match = this.lhg.getGraphCreator().create();
         V v;
         boolean added;
         for(LabeledVertex<V, L> lv: labeledPatternGraph.vertexSet()) {
@@ -273,9 +342,8 @@ public class BaselineAlgorithm {
             e = mapping.getEdgeCorrespondence(e, direction);
             v = labeledGraph.getEdgeSource(e).getData();
             v2 = labeledGraph.getEdgeTarget(e).getData();
-            added = match.addEdge(v, v2, e);
-            // TODO: check if edges are added correctly. I.e. e == match.addEdge(v, v2) and does match.addEdge(v, v2, e) change e?
-            assert added;
+            e = match.addEdge(v, v2);
+            assert e != null;
         }
         return match;
     }
