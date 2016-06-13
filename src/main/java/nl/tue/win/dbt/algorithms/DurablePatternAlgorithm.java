@@ -293,13 +293,13 @@ public class DurablePatternAlgorithm<V, E, L> implements DurablePattern<V, E, L>
     private void durableGraphSearch(
             final int vertexIndex,
             final SetMultimap<V, V> candidates) {
-        if (vertexIndex == this.vertices.size() - 1) {
+        if (vertexIndex == this.vertices.size()) {
             BitSet intervals = new BitSet(this.lvg.getSize());
             intervals.or(this.intervals);
 
             V candidateVertex;
             for(V patternVertex: this.vertices) {
-                candidateVertex = candidates.get(patternVertex).iterator().next(); // TODO: is this always a single element for last vertex?
+                candidateVertex = candidates.get(patternVertex).iterator().next(); // Expect exactly one.
                 intervals.and(calculateLabelSetLifespan(patternVertex, candidateVertex));
                 if(intervals.isEmpty()) {
                     return;
@@ -313,8 +313,8 @@ public class DurablePatternAlgorithm<V, E, L> implements DurablePattern<V, E, L>
 
                 source = this.pattern.getEdgeSource(patternEdge);
                 target = this.pattern.getEdgeTarget(patternEdge);
-                source = candidates.get(source).iterator().next(); // TODO: is this always a single element for last vertex?
-                target = candidates.get(target).iterator().next(); // TODO: is this always a single element for last vertex?
+                source = candidates.get(source).iterator().next(); // Expect exactly one.
+                target = candidates.get(target).iterator().next(); // Expect exactly one.
 
                 // TODO: Following line only works for unique edges between two vertices.
                 candidateEdge = this.lvg.getEdge(source, target);
@@ -361,9 +361,9 @@ public class DurablePatternAlgorithm<V, E, L> implements DurablePattern<V, E, L>
     }
 
     private void updateState(
-            final SetMultimap<V, V> candidates, // TODO: is this always a single element for last vertex?
+            final SetMultimap<V, V> candidates,
             final BitSet intervals) {
-        // TODO: Following code assumes a single match.
+        // Following code assumes exactly one candidate per pattern vertex.
         // TODO: Following code only works for unique edges between two vertices.
         LabeledGraph<V, E, L> match = this.graphCreator.create();
 
@@ -371,7 +371,7 @@ public class DurablePatternAlgorithm<V, E, L> implements DurablePattern<V, E, L>
 
         V vertex;
         for(V patternVertex: this.vertices) {
-            vertex = candidates.get(patternVertex).iterator().next(); // TODO: is this always a single element for last vertex?
+            vertex = candidates.get(patternVertex).iterator().next(); // Expect exactly one.
             match.addVertex(vertex);
             for (L label : this.pattern.getLabels(patternVertex)) {
                 match.addLabel(vertex, label);
@@ -384,8 +384,8 @@ public class DurablePatternAlgorithm<V, E, L> implements DurablePattern<V, E, L>
             // TODO: handle multiple edges for same pairs.
             source = this.pattern.getEdgeSource(patternEdge);
             target = this.pattern.getEdgeTarget(patternEdge);
-            source = candidates.get(source).iterator().next(); // TODO: is this always a single element for last vertex?
-            target = candidates.get(target).iterator().next(); // TODO: is this always a single element for last vertex?
+            source = candidates.get(source).iterator().next(); // Expect exactly one.
+            target = candidates.get(target).iterator().next(); // Expect exactly one.
             match.addEdge(source, target);
         }
 
