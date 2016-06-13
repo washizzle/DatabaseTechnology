@@ -35,13 +35,13 @@ public class LabeledVersionGraph<V, E, L> extends LabeledGraph<V, E, L> implemen
         this.vertexLifespans = new HashMap<>();
         this.initMapLifespans(
                 this.vertexLifespans,
-                historyGraph.vertexSet(),
+                super.vertexSet(),
                 historyGraph::vertexLifespan);
 
         this.edgeLifespans = new HashMap<>();
         this.initMapLifespans(
                 this.edgeLifespans,
-                historyGraph.edgeSet(),
+                super.edgeSet(),
                 historyGraph::edgeLifespan);
 
         this.labelLifespans = HashBasedTable.create();

@@ -131,7 +131,9 @@ public class HistoryGraph<G extends Graph<V, E>, V, E> extends ArrayList<G> impl
     }
 
     public RangeSet<Integer> edgeLifespan(E edge) {
-        return createLifespan(i -> this.getGraph(i).containsEdge(edge));
+        return createLifespan(i -> this.getGraph(i).containsEdge(
+                this.getGraph(i).getEdgeSource(edge),
+                this.getGraph(i).getEdgeTarget(edge)));
     }
 
     public RangeSet<Integer> edgeLifespan(V sourceVertex, V targetVertex) {
