@@ -1,11 +1,7 @@
 package nl.tue.win.dbt;
 
-import nl.tue.win.dbt.algorithms.Intersection;
-import nl.tue.win.dbt.algorithms.IsomorphicSubgraphFinder;
-import nl.tue.win.dbt.algorithms.LabeledVertexSubgraphFinder;
-import nl.tue.win.dbt.algorithms.LongestBitSequence;
+import nl.tue.win.dbt.algorithms.*;
 import nl.tue.win.dbt.algorithms.TimeIndices.Ctinla;
-import nl.tue.win.dbt.algorithms.IsomorphicSubgraphFinderCreator;
 import nl.tue.win.dbt.algorithms.TimeIndices.TimeIndex;
 import nl.tue.win.dbt.algorithms.TimeIndices.candidatefilters.CandidateFilter;
 import nl.tue.win.dbt.data.LabeledGraph;
@@ -28,7 +24,7 @@ public class Configuration implements Intersection, IsomorphicSubgraphFinderCrea
         this.intersection = new Intersection.SmallestContainsIntersection();
         this.ti = new Ctinla();
         this.lbs = new SimpleLongestBitSequence();
-        this.isfCreator = LabeledVertexSubgraphFinder::new;
+        this.isfCreator = VertexComparatorSubgraphFinder::new;
     }
 
     public Intersection getIntersection() {

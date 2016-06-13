@@ -27,7 +27,11 @@ public class VertexComparatorSubgraphFinder<V, E, L>
         Comparator<V> vertexComparator = (v1, v2) -> this.compareVertices(graph, pattern ,v1, v2);
 
         VF2SubgraphIsomorphismInspector<V, E> inspector;
-        inspector = new VF2SubgraphIsomorphismInspector<>(graph, pattern, vertexComparator, null);
+        inspector = new VF2SubgraphIsomorphismInspector<>(
+                graph.getExactImpl(),
+                pattern.getExactImpl(),
+                vertexComparator,
+                null);
 
         Set<LabeledGraph<V, E, L>> matches;
         matches = new HashSet<>();
@@ -53,8 +57,7 @@ public class VertexComparatorSubgraphFinder<V, E, L>
         final int notEqual = Integer.MIN_VALUE;
         final int equal = 0;
         int rv;
-        if(graphVertex.equals(patternVertex)
-                && graph.getLabels(graphVertex).containsAll(pattern.getLabels(patternVertex))) {
+        if(graph.getLabels(graphVertex).containsAll(pattern.getLabels(patternVertex))) {
             rv = equal;
         } else {
             rv = notEqual;

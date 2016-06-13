@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 public class LabeledVertexSubgraphFinder<V, E, L>
         implements IsomorphicSubgraphFinder<V, E, L>, Serializable {
+    // TODO: Design flaw: pattern does not necessarily contain all labels.
 
     private final List<Graph<LabeledVertex<V, L>, E>> labeledGraphs;
     private final GraphCreator<LabeledGraph<V, E, L>, V, E> graphCreator;
