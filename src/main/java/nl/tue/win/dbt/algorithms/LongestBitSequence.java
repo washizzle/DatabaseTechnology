@@ -58,8 +58,10 @@ public interface LongestBitSequence extends Serializable {
             for (int i = 0; i < bs.length(); i++) {
                 if(bs.get(i) == state) {
                     ++length;
+                    if (length > max) {
+                        max = length;
+                    }
                 } else {
-                    max = length;
                     length = 0;
                 }
             }
