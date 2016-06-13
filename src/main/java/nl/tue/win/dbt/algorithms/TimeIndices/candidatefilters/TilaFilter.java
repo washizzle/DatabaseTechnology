@@ -39,7 +39,7 @@ public class TilaFilter<V, E, L> implements CandidateFilter<V, E, L>, Serializab
             final BitSet intervals) {
         Set<V> candidates = new HashSet<>();
         Set<L> labels = pattern.getLabels(patternVertex);
-        for (int i = intervals.nextSetBit(0); i >= 0; i = intervals.nextSetBit(i+1)) {
+        for (int i = intervals.nextSetBit(0); i >= 0 && i < this.lvg.getSize(); i = intervals.nextSetBit(i+1)) {
             this.updateCandidates(i, labels, candidates);
         }
         return candidates;
