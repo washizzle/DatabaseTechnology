@@ -136,8 +136,14 @@ public class CtinlaFilter<V, E, L> implements CandidateFilter<V, E, L>, Serializ
                     boolean match = false;
                     // check for all time instants of given interval if there is at least one occurrence of the current label
                     for (int i = intervals.nextSetBit(0); i >= 0 && i < this.lvg.getSize(); i = intervals.nextSetBit(i+1)) {
-                        if (ctinla.get(r).get(node, c_label).get(i) > 0) {
-                            match = true;
+                        Table<V, L, ArrayList<Integer>> rTable = ctinla.get(r);
+                        ArrayList<Integer> timestamps = rTable.get(node, c_label);
+                        if(timestamps != null) {
+                            Integer count = timestamps.get(i);
+                            if (count != null && count > 0) {
+                                match = true;
+                                break;
+                            }
                         }
                     }
 
@@ -181,15 +187,19 @@ public class CtinlaFilter<V, E, L> implements CandidateFilter<V, E, L>, Serializ
                         boolean match = true;
                         // check if pattern node and pattern neighbors exist at the same time instant
                         for (ArrayList<Integer> c : cnt) {
-                            if (c.get(i) == 0)
+                            if (c.get(i) == 0) {
                                 match = false;
+                                break;
+                            }
                         }
 
                         // if that is so, we also have to check for each label if there are enough respective neighbors according to the pattern
                         if (match) {
                             for (Map.Entry<L, Integer> e : hm.entrySet()) {
-                                if (e.getValue() > ctinla.get(r).get(node, e.getKey()).get(i))
+                                if (e.getValue() > ctinla.get(r).get(node, e.getKey()).get(i)) {
                                     match = false;
+                                    break;
+                                }
                             }
 
                             // if both conditions hold, we have a pattern match in at least one time instant
