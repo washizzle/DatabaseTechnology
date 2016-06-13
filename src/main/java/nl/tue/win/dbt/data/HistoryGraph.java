@@ -120,7 +120,7 @@ public class HistoryGraph<G extends Graph<V, E>, V, E> extends ArrayList<G> impl
 
     public RangeSet<Integer> lifespan() {
         RangeSet<Integer> range = TreeRangeSet.create();
-        if (this.size() > 1) {
+        if (this.size() > 0) {
             range.add(IntegerRanges.closed(0, this.size() - 1));
         }
         return range;
