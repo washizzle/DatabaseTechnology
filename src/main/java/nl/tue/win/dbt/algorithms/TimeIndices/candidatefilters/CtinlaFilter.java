@@ -135,7 +135,7 @@ public class CtinlaFilter<V, E, L> implements CandidateFilter<V, E, L>, Serializ
 
                     boolean match = false;
                     // check for all time instants of given interval if there is at least one occurrence of the current label
-                    for (int i = intervals.nextSetBit(0); i < intervals.length(); i++) {
+                    for (int i = intervals.nextSetBit(0); i >= 0 && i < this.lvg.getSize(); i = intervals.nextSetBit(i+1)) {
                         if (ctinla.get(r).get(node, c_label).get(i) > 0) {
                             match = true;
                         }
@@ -176,7 +176,7 @@ public class CtinlaFilter<V, E, L> implements CandidateFilter<V, E, L>, Serializ
 
                     boolean total_match = false;
                     // check for all time instants of given interval
-                    for (int i = intervals.nextSetBit(0); i < intervals.length(); i++) {
+                    for (int i = intervals.nextSetBit(0); i >= 0 && i < this.lvg.getSize(); i = intervals.nextSetBit(i+1)) {
 
                         boolean match = true;
                         // check if pattern node and pattern neighbors exist at the same time instant
