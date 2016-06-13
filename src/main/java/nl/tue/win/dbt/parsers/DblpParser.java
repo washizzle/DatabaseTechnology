@@ -52,8 +52,8 @@ public class DblpParser implements DatasetParser<Integer, Edge, DblpLabel> {
             e.printStackTrace();
         }
         addLabels();
-        yearToLgMap.keySet().stream().sorted();
-        for(Integer year : yearToLgMap.keySet()) {
+        Iterable<Integer> keys = this.yearToLgMap.keySet().stream().sorted()::iterator;
+        for(Integer year: keys) {
             lhg.add(this.yearToLgMap.get(year));
         }
         return this.lhg;
@@ -69,12 +69,12 @@ public class DblpParser implements DatasetParser<Integer, Edge, DblpLabel> {
 
     private void addLabels() {
         DblpLabel label;
-        int year, author, count;
+        Integer year, author, count;
         for(Table.Cell<Integer, Integer, Integer> cell: this.yearAuthorCount.cellSet()) {
             year = cell.getRowKey();
             author = cell.getColumnKey();
             count = cell.getValue();
-            label = DblpLabel.calculateLabel(count);
+            label = DblpLabel.calculateLabel(count!= null ? count : 0);
             this.yearToLgMap.get(year).addLabel(author, label);
         }
     }
@@ -86,7 +86,7 @@ public class DblpParser implements DatasetParser<Integer, Edge, DblpLabel> {
 
         LabeledGraph<Integer, Edge, DblpLabel> graph;
         if(!this.yearToLgMap.containsKey(year)) {
-            graph = this.createGraph();
+            graph = DblpParser.createGraph();
             this.yearToLgMap.put(year, graph);
         } else {
             graph = this.yearToLgMap.get(year);
