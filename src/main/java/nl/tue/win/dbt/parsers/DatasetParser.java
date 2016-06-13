@@ -4,5 +4,5 @@ import nl.tue.win.dbt.data.LabeledGraph;
 import nl.tue.win.dbt.data.LabeledHistoryGraph;
 
 public interface DatasetParser<V, E, L> {
-     LabeledHistoryGraph<? extends LabeledGraph<V, E, L>, V, E, L> convertToHistoryGraph(String file);
+     LabeledHistoryGraph<LabeledGraph<V, E, L>, V, E, L> convertToHistoryGraph(String file);
 }
