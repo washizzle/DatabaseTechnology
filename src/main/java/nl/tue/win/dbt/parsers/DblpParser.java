@@ -121,9 +121,29 @@ public class DblpParser implements DatasetParser<Integer, Edge, DblpLabel> {
     public static void main(String[] args) {
         System.out.println("The parser way :)");
 
+        String[] filenames = new String[] {
+                "out.dblp_coauthor.001",
+                "out.dblp_coauthor.002",
+                "sample2.txt",
+                "sample3.txt",
+                "sample4.txt",
+        };
+        boolean success = true;
+        for(String filename: filenames) {
+            success &= doTest(filename);
+        }
+        System.out.println("Test " + (success ? "passed" : "failed"));
+    }
+
+    private static boolean doTest(String filename) {
         DblpParser dblpParser = new DblpParser();
         LabeledHistoryGraph<LabeledGraph<Integer, Edge, DblpLabel>, Integer, Edge, DblpLabel> lhg;
-        lhg = dblpParser.convertToHistoryGraph("out.dblp_coauthor.001");
+        lhg = dblpParser.convertToHistoryGraph(filename);
+
+        System.out.println("Timestamps: " + lhg.size());
+        System.out.println("Vertices: " + lhg.vertexSet().size());
+        System.out.println("Edges: " + lhg.edgeSet().size());
+
         BaselineAlgorithm<Integer, Edge, DblpLabel> base = new BaselineAlgorithm<>(lhg);
         DurablePatternAlgorithm<Integer, Edge, DblpLabel> dur = new DurablePatternAlgorithm<>(lhg);
 
@@ -131,9 +151,17 @@ public class DblpParser implements DatasetParser<Integer, Edge, DblpLabel> {
         pattern = createGraph();
         pattern.addVertex(Integer.MIN_VALUE);
         pattern.addLabel(Integer.MIN_VALUE, DblpLabel.PROFESSOR);
+        pattern.addVertex(-100);
+        pattern.addLabel(-100, DblpLabel.JUNIOR);
+        pattern.addEdge(-100, Integer.MIN_VALUE);
+        pattern.addVertex(-200);
+        pattern.addLabel(-200, DblpLabel.JUNIOR);
+        pattern.addEdge(-100, -200);
+        pattern.addEdge(-200, Integer.MIN_VALUE);
 
         RangeSet<Integer> intervals = TreeRangeSet.create();
-        intervals.add(IntegerRanges.closed(1, 5));
+//        intervals.add(IntegerRanges.closed(1, 5));
+        intervals.add(IntegerRanges.closed(0, lhg.size() - 1));
 
         Set<Lifespan<LabeledGraph<Integer, Edge, DblpLabel>>> baselineCon;
         baselineCon = base.queryMaximalContinuousDurableGraphPattern(pattern, intervals);
@@ -145,12 +173,20 @@ public class DblpParser implements DatasetParser<Integer, Edge, DblpLabel> {
         Set<Lifespan<LabeledGraph<Integer, Edge, DblpLabel>>> algoCol;
         algoCol = dur.queryMaximalCollectiveDurableGraphPattern(pattern, intervals);
 
+        boolean con = baselineCon.equals(algoCon);
+        boolean col = baselineCol.equals(algoCol);
+
         System.out.println("Continuous");
         System.out.println(baselineCon);
         System.out.println(algoCon);
+        System.out.println(con);
 
         System.out.println("Collective");
         System.out.println(baselineCol);
         System.out.println(algoCol);
+        System.out.println(col);
+
+        System.out.println();
+        return con && col;
     }
 }
