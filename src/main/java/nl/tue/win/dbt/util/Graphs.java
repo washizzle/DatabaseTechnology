@@ -15,8 +15,8 @@ public class Graphs {
     public static <V, E> Set<E> getTraversableEdges(Graph<V, E> graph, V vertex) {
         // Code smell due to bad design JGraphT. See CrossComponentIterator.createGraphSpecifics
         // https://github.com/jgrapht/jgrapht/blob/master/jgrapht-core/src/main/java/org/jgrapht/traverse/CrossComponentIterator.java#L339
-        while(graph instanceof GraphDecorator) {
-            graph = ((GraphDecorator<V, E>) graph).getImpl();
+        if(graph instanceof GraphDecorator) {
+            graph = ((GraphDecorator<V, E>) graph).getExactImpl();
         }
         Set<E> outgoingEdges;
         if(graph instanceof DirectedGraph) {

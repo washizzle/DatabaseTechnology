@@ -20,6 +20,14 @@ public class GraphDecorator<V, E> implements Graph<V,E>, Serializable {
         return this.impl;
     }
 
+    public Graph<V, E> getExactImpl() {
+        Graph<V, E> graph = this.impl;
+        while(graph instanceof GraphDecorator) {
+            graph = ((GraphDecorator<V, E>) graph).getImpl();
+        }
+        return graph;
+    }
+
     @Override
     public Set<E> getAllEdges(V v, V v1) {
         return impl.getAllEdges(v, v1);
