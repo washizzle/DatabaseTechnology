@@ -130,7 +130,7 @@ public class DurablePatternAlgorithm<V, E, L> implements DurablePattern<V, E, L>
     @Override
     public Set<Lifespan<LabeledGraph<V, E, L>>> queryMaximalCollectiveDurableGraphPattern(
             final LabeledGraph<V, E, L> pattern) {
-        return this.query(pattern, new BitSet(this.lvg.getSize()), true);
+        return this.query(pattern, allIntervals(), true);
     }
 
     @Override
@@ -143,7 +143,7 @@ public class DurablePatternAlgorithm<V, E, L> implements DurablePattern<V, E, L>
     @Override
     public Set<Lifespan<LabeledGraph<V, E, L>>> queryMaximalContinuousDurableGraphPattern(
             final LabeledGraph<V, E, L> pattern) {
-        return this.query(pattern, new BitSet(this.lvg.getSize()), false);
+        return this.query(pattern, allIntervals(), false);
     }
 
     @Override
@@ -151,6 +151,12 @@ public class DurablePatternAlgorithm<V, E, L> implements DurablePattern<V, E, L>
             final LabeledGraph<V, E, L> pattern,
             final RangeSet<Integer> intervals) {
         return this.query(pattern, IntegerRangeSets.toBitSet(intervals), false);
+    }
+
+    private BitSet allIntervals() {
+        BitSet bs = new BitSet(this.lvg.getSize());
+        bs.flip(0, this.lvg.getSize());
+        return bs;
     }
 
     private Set<Lifespan<LabeledGraph<V, E, L>>> query(
