@@ -23,7 +23,7 @@ public class Main {
         System.out.println("Hello World!");
         LabeledGraph<Integer, Edge, String> pattern;
         pattern = createGraph();
-        addPattern(pattern);
+        addPattern(pattern, 100);
 
         LabeledHistoryGraph<
                 LabeledGraph<Integer, Edge, String>,
@@ -55,6 +55,9 @@ public class Main {
         algoCon = dur.queryMaximalContinuousDurableGraphPattern(pattern, intervals);
         Set<Lifespan<LabeledGraph<Integer, Edge, String>>> algoCol;
         algoCol = dur.queryMaximalCollectiveDurableGraphPattern(pattern, intervals);
+
+        System.out.println("Pattern");
+        System.out.println(pattern);
 
         System.out.println("Continuous");
         System.out.println(baselineCon);
@@ -134,20 +137,24 @@ public class Main {
                 () -> new DefaultDirectedGraph<>(Edge.class));
     }
 
-    private static void addPattern(LabeledGraph<Integer, Edge, String> graph) {
+    private static void addPattern(LabeledGraph<Integer, Edge, String> graph, int offset) {
         for (int i = 1; i < 5; i++) {
-            graph.addVertex(i);
+            graph.addVertex(i + offset);
         }
-        graph.addEdge(1, 2);
-        graph.addEdge(2, 3);
-        graph.addEdge(3, 1);
-        graph.addEdge(4, 1);
+        graph.addEdge(1 + offset, 2 + offset);
+        graph.addEdge(2 + offset, 3 + offset);
+        graph.addEdge(3 + offset, 1 + offset);
+        graph.addEdge(4 + offset, 1 + offset);
 
-        graph.addLabel(1, "A");
-        graph.addLabel(2, "B");
-        graph.addLabel(3, "C");
-        graph.addLabel(4, "X");
-        graph.addLabel(5, "Y");
+        graph.addLabel(1 + offset, "A");
+        graph.addLabel(2 + offset, "B");
+        graph.addLabel(3 + offset, "C");
+        graph.addLabel(4 + offset, "X");
+        graph.addLabel(5 + offset, "Y");
+    }
+
+    private static void addPattern(LabeledGraph<Integer, Edge, String> graph) {
+        addPattern(graph, 0);
     }
 
     private static <T> void writeToFile(T t, String filename) {
