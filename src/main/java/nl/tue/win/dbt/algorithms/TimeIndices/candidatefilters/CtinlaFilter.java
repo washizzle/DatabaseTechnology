@@ -85,13 +85,13 @@ public class CtinlaFilter<V, E, L> implements CandidateFilter<V, E, L>, Serializ
             }
         }
 
-        // print ctinla time index
-        for (int i = 0; i <= this.radius; i++) {
-            System.out.println("Ctinla(" + i + "):");
-            for (Table.Cell<V, L, ArrayList<Integer>> t : ctinla.get(i).cellSet()) {
-                System.out.println("Node: " + t.getRowKey() + ", Label: " + t.getColumnKey() + ", Counters: " + t.getValue());
-            }
-        }
+//        // print ctinla time index
+//        for (int i = 0; i <= this.radius; i++) {
+//            System.out.println("Ctinla(" + i + "):");
+//            for (Table.Cell<V, L, ArrayList<Integer>> t : ctinla.get(i).cellSet()) {
+//                System.out.println("Node: " + t.getRowKey() + ", Label: " + t.getColumnKey() + ", Counters: " + t.getValue());
+//            }
+//        }
     }
 
     @Override
@@ -213,8 +213,8 @@ public class CtinlaFilter<V, E, L> implements CandidateFilter<V, E, L>, Serializ
             }
         }
 
-        // print candidate nodes
-        System.out.println("Pattern Node: " + pattern.getLabels(patternVertex) + ", Candidate Nodes: " + candidates);
+//        // print candidate nodes
+//        System.out.println("Pattern Node: " + pattern.getLabels(patternVertex) + ", Candidate Nodes: " + candidates);
 
         return candidates;
     }
