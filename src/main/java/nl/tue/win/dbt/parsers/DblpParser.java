@@ -112,7 +112,7 @@ public class DblpParser implements DatasetParser<Integer, Edge, DblpLabel> {
         this.yearAuthorCount.put(year, author, this.yearAuthorCount.get(year, author) + 1); // TODO: get++
     }
 
-    private static LabeledGraph<Integer, Edge, DblpLabel> createGraph() {
+    public static LabeledGraph<Integer, Edge, DblpLabel> createGraph() {
         return new LabeledGraph<>(
                 new SimpleGraph<>(Edge.class),
                 () -> new SimpleGraph<>(Edge.class));
