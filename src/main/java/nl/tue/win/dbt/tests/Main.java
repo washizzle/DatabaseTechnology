@@ -164,7 +164,7 @@ public class Main {
     private static void printQueryTime(QueryTime<?, ?, ?> qt, String description) {
         List<Long> col = qt.calculateCollectiveTimeDeltas();
         printList(col, "Collective " + description);
-        List<Long> con = qt.calculateCollectiveTimeDeltas();
+        List<Long> con = qt.calculateContinuousTimeDeltas();
         printList(con, "Continuous " + description);
     }
 
