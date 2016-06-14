@@ -22,14 +22,20 @@ public class Main {
     private final DurableSetupTime<Integer, Edge, DblpLabel> ctinlaTime;
     private final QueryTime<Integer, Edge, DblpLabel> ctinlaQueryTime;
 
-    private Main(String filename, boolean base, boolean tila, boolean ctinla, int maxClique) {
+    private Main(String filename, boolean base, boolean tila, boolean ctinla, int maxClique, DblpLabel label) {
         Objects.requireNonNull(filename);
-        this.patterns = this.createCliquePatterns(maxClique);
+        Objects.requireNonNull(label);
+        System.out.println("Creating patterns");
+        this.patterns = this.createCliquePatterns(maxClique, label);
+        System.out.println("Creating history graph");
         this.readTime = new ReadTime<>(filename, new DblpParser());
+        System.out.println("Creating LVG");
         this.lvgTime = new LvgTime<>(this.readTime.getLhg());
 
         if(base) {
+            System.out.println("Creating baseline algorithm");
             this.baseTime = this.createBaseTime();
+            System.out.println("Executing baseline queries");
             this.baseQueryTime = new QueryTime<>(this.baseTime.getFilename(), this.patterns);
         } else {
             this.baseTime = null;
@@ -37,7 +43,9 @@ public class Main {
         }
 
         if(tila) {
+            System.out.println("Creating TiLa algorithm");
             this.tilaTime = this.createTilaTime();
+            System.out.println("Executing TiLa queries");
             this.tilaQueryTime = new QueryTime<>(this.tilaTime.getFilename(), this.patterns);
         } else {
             this.tilaTime = null;
@@ -45,7 +53,9 @@ public class Main {
         }
 
         if(ctinla) {
+            System.out.println("Creating CTiNLa algorithm");
             this.ctinlaTime = this.createCtinlaTime();
+            System.out.println("Executing CTiNLa queries");
             this.ctinlaQueryTime = new QueryTime<>(this.ctinlaTime.getFilename(), this.patterns);
         } else {
             this.ctinlaTime = null;
@@ -84,7 +94,14 @@ public class Main {
             for(DblpLabel label: DblpLabel.values()) {
                 patterns.add(createCliquePattern(i, label));
             }
-            patterns.add(createCliquePattern(i, DblpLabel.JUNIOR));
+        }
+        return patterns;
+    }
+
+    private List<LabeledGraph<Integer, Edge, DblpLabel>> createCliquePatterns(int max, DblpLabel label) {
+        List<LabeledGraph<Integer, Edge, DblpLabel>> patterns = new ArrayList<>();
+        for(int i = 1; i <= max; i++) {
+            patterns.add(createCliquePattern(i, label));
         }
         return patterns;
     }
@@ -110,11 +127,16 @@ public class Main {
         boolean base = true;
         boolean tila = true;
         boolean ctinla = true;
-        int maxClique = 1;
+        int maxClique = 5;
+        DblpLabel label = DblpLabel.JUNIOR;
 
-        Main m = new Main(filename, base, tila, ctinla, maxClique);
+        Main m = new Main(filename, base, tila, ctinla, maxClique, label);
 
         // TODO: query the info.
+
+        System.out.println("-------------------------------------------------------------------");
+        System.out.println("Results");
+        System.out.println("-------------------------------------------------------------------");
 
         System.out.println("Reading data took " + m.readTime.calculateReadDelta());
 
@@ -123,22 +145,32 @@ public class Main {
         if(base) {
             System.out.println("Creating base took " + m.baseTime.calculateBaseDelta());
             System.out.println("Writing base took " + m.baseTime.calculateWriteDelta());
-            System.out.println("Collective query 0 took " + m.baseQueryTime.calculateCollectiveTimeDeltas().get(0));
-            System.out.println("Continuous query 0 took " + m.baseQueryTime.calculateContinuousTimeDeltas().get(0));
+            printQueryTime(m.baseQueryTime, "base");
         }
 
         if(tila) {
             System.out.println("Creating tila took " + m.tilaTime.calculateDurableDelta());
             System.out.println("Writing tila took " + m.tilaTime.calculateWriteDelta());
-            System.out.println("Collective query 0 took " + m.tilaQueryTime.calculateCollectiveTimeDeltas().get(0));
-            System.out.println("Continuous query 0 took " + m.tilaQueryTime.calculateContinuousTimeDeltas().get(0));
+            printQueryTime(m.tilaQueryTime, "TiLa");
         }
 
         if(ctinla) {
             System.out.println("Creating ctinla took " + m.ctinlaTime.calculateDurableDelta());
             System.out.println("Writing ctinla took " + m.ctinlaTime.calculateWriteDelta());
-            System.out.println("Collective query 0 took " + m.ctinlaQueryTime.calculateCollectiveTimeDeltas().get(0));
-            System.out.println("Continuous query 0 took " + m.ctinlaQueryTime.calculateContinuousTimeDeltas().get(0));
+            printQueryTime(m.ctinlaQueryTime, "CTiNLa");
+        }
+    }
+
+    private static void printQueryTime(QueryTime<?, ?, ?> qt, String description) {
+        List<Long> col = qt.calculateCollectiveTimeDeltas();
+        printList(col, "Collective " + description);
+        List<Long> con = qt.calculateCollectiveTimeDeltas();
+        printList(con, "Continuous " + description);
+    }
+
+    private static void printList(List<Long> list, String description) {
+        for(int i = 0; i < list.size(); i++) {
+            System.out.println(description + ' ' + (i+1) + "-clique query took " + list.get(i));
         }
     }
 
